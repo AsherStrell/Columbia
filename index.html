@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Humanities Quiz</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; min-height: 100vh; }
+
+/* Nav */
+nav { display: flex; gap: 0; background: #16213e; border-bottom: 2px solid #0f3460; }
+nav button { flex: 1; padding: 14px; background: none; border: none; color: #8899aa; font-size: 15px; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
+nav button.active { color: #e94560; border-bottom-color: #e94560; background: rgba(233,69,96,0.08); }
+nav button:hover { color: #e94560; }
+
+/* Container */
+.container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+/* Views */
+.view { display: none; }
+.view.active { display: block; }
+
+/* Library */
+.drop-zone { border: 2px dashed #0f3460; border-radius: 12px; padding: 40px; text-align: center; margin: 20px 0; cursor: pointer; transition: all 0.2s; }
+.drop-zone:hover, .drop-zone.dragover { border-color: #e94560; background: rgba(233,69,96,0.05); }
+.drop-zone p { color: #8899aa; margin: 8px 0; }
+.drop-zone .big { font-size: 18px; color: #ccc; }
+
+.song-list { list-style: none; }
+.song-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; margin: 4px 0; border-radius: 8px; background: #16213e; }
+.song-item .status { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.song-item .status.loaded { background: #4ecca3; }
+.song-item .status.missing { background: #555; }
+.song-item .name { flex: 1; font-size: 14px; }
+.song-item .accuracy { font-size: 13px; padding: 2px 8px; border-radius: 10px; }
+.song-item button { background: #0f3460; border: none; color: #ccc; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.song-item button:hover { background: #e94560; color: #fff; }
+.song-item .file-label { font-size: 12px; color: #666; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.load-folder-btn { display: inline-block; margin: 10px 0; padding: 10px 20px; background: #0f3460; border: none; color: #ccc; border-radius: 8px; cursor: pointer; font-size: 14px; }
+.load-folder-btn:hover { background: #e94560; color: #fff; }
+
+/* Quiz */
+.quiz-area { text-align: center; padding: 30px 0; }
+.quiz-area h2 { margin-bottom: 20px; color: #e94560; }
+.quiz-status { color: #8899aa; margin-bottom: 20px; font-size: 14px; }
+
+.player-controls { margin: 20px 0; }
+.player-controls button { padding: 12px 28px; margin: 0 6px; border-radius: 8px; border: none; font-size: 15px; cursor: pointer; transition: all 0.2s; }
+.btn-play { background: #e94560; color: #fff; }
+.btn-play:hover { background: #c7374e; }
+.btn-replay { background: #0f3460; color: #ccc; }
+.btn-replay:hover { background: #1a4a8a; }
+.btn-stop { background: #333; color: #ccc; }
+.btn-stop:hover { background: #555; }
+
+.answer-area { margin: 24px auto; max-width: 500px; }
+.answer-area input { width: 100%; padding: 14px 18px; border-radius: 8px; border: 2px solid #0f3460; background: #16213e; color: #e0e0e0; font-size: 16px; outline: none; }
+.answer-area input:focus { border-color: #e94560; }
+.answer-area .submit-btn { margin-top: 12px; padding: 12px 36px; background: #e94560; color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; }
+.answer-area .submit-btn:hover { background: #c7374e; }
+.answer-area .submit-btn:disabled { background: #444; cursor: default; }
+
+.reveal-area { margin: 20px auto; max-width: 500px; padding: 20px; background: #16213e; border-radius: 12px; }
+.reveal-area .correct-answer { font-size: 18px; color: #4ecca3; margin: 8px 0 4px; }
+.reveal-area .your-answer { font-size: 14px; color: #8899aa; margin-bottom: 16px; }
+.grade-buttons { display: flex; gap: 10px; justify-content: center; }
+.grade-buttons button { padding: 10px 24px; border-radius: 8px; border: none; font-size: 15px; cursor: pointer; font-weight: 600; }
+.btn-right { background: #4ecca3; color: #1a1a2e; }
+.btn-close { background: #f0a500; color: #1a1a2e; }
+.btn-wrong { background: #e94560; color: #fff; }
+.grade-buttons button:hover { opacity: 0.85; }
+
+.next-btn { margin-top: 20px; padding: 12px 36px; background: #0f3460; color: #ccc; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; }
+.next-btn:hover { background: #1a4a8a; }
+
+.progress-bar { width: 100%; height: 6px; background: #0f3460; border-radius: 3px; margin-top: 10px; overflow: hidden; }
+.progress-fill { height: 100%; background: #e94560; transition: width 0.3s; }
+
+.no-songs-msg { color: #8899aa; padding: 40px; text-align: center; }
+.no-songs-msg a { color: #e94560; cursor: pointer; text-decoration: underline; }
+
+/* Study */
+.study-list { list-style: none; }
+.study-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin: 4px 0; border-radius: 8px; background: #16213e; cursor: pointer; transition: background 0.2s; }
+.study-item:hover { background: #1e2d50; }
+.study-item.playing { background: #0f3460; border-left: 3px solid #e94560; }
+.study-item .name { flex: 1; }
+.study-item button { background: #0f3460; border: none; color: #ccc; padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+.study-item button:hover { background: #e94560; color: #fff; }
+
+/* Stats */
+.stats-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 20px 0; }
+.stat-card { background: #16213e; border-radius: 12px; padding: 20px; text-align: center; }
+.stat-card .number { font-size: 32px; font-weight: 700; color: #e94560; }
+.stat-card .label { font-size: 13px; color: #8899aa; margin-top: 4px; }
+
+.stats-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+.stats-table th { text-align: left; padding: 10px 12px; color: #8899aa; border-bottom: 1px solid #0f3460; font-size: 13px; }
+.stats-table td { padding: 8px 12px; border-bottom: 1px solid rgba(15,52,96,0.5); font-size: 14px; }
+.stats-table tr:hover { background: rgba(233,69,96,0.05); }
+
+.mastery-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+.mastery-high { background: rgba(78,204,163,0.2); color: #4ecca3; }
+.mastery-mid { background: rgba(240,165,0,0.2); color: #f0a500; }
+.mastery-low { background: rgba(233,69,96,0.2); color: #e94560; }
+.mastery-none { background: rgba(100,100,100,0.2); color: #888; }
+
+.reset-btn { margin-top: 20px; padding: 10px 20px; background: #333; border: none; color: #e94560; border-radius: 8px; cursor: pointer; font-size: 14px; }
+.reset-btn:hover { background: #e94560; color: #fff; }
+
+/* Session banner */
+.session-banner { background: #16213e; border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.session-banner .count { color: #e94560; font-weight: 700; }
+
+h2 { margin-bottom: 16px; }
+
+/* Audio time display */
+.time-display { color: #8899aa; font-size: 14px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-btn active" data-view="library">Library</button>
+  <button class="nav-btn" data-view="quiz">Quiz</button>
+  <button class="nav-btn" data-view="study">Study</button>
+  <button class="nav-btn" data-view="stats">Stats</button>
+</nav>
+
+<div class="container">
+  <!-- LIBRARY VIEW -->
+  <div id="library-view" class="view active">
+    <h2>Song Library</h2>
+    <div class="drop-zone" id="drop-zone">
+      <p class="big">Drop MP3 files here</p>
+      <p>or click to browse</p>
+      <input type="file" id="file-input" multiple accept=".mp3,audio/*" style="display:none">
+    </div>
+    <button class="load-folder-btn" id="load-folder-btn">Load Folder</button>
+    <input type="file" id="folder-input" webkitdirectory multiple accept=".mp3,audio/*" style="display:none">
+    <p style="color:#666;font-size:13px;margin:8px 0;">Tip: Name files to match pieces (e.g. "Kyrie.mp3") for auto-assignment</p>
+    <ul class="song-list" id="song-list"></ul>
+  </div>
+
+  <!-- QUIZ VIEW -->
+  <div id="quiz-view" class="view">
+    <div class="quiz-area">
+      <h2>Music Quiz</h2>
+      <div class="session-banner">
+        <span>This session: <span class="count" id="session-correct">0</span> right, <span class="count" id="session-close">0</span> close, <span class="count" id="session-wrong">0</span> wrong</span>
+        <span id="session-accuracy"></span>
+      </div>
+
+      <div id="quiz-no-songs" class="no-songs-msg" style="display:none;">
+        <p>No songs loaded yet.</p>
+        <p><a id="go-to-library">Go to Library</a> to add MP3 files first.</p>
+      </div>
+
+      <div id="quiz-content" style="display:none;">
+        <div class="quiz-status" id="quiz-status">Press Play to start</div>
+        <div class="player-controls">
+          <button class="btn-play" id="quiz-play">&#9654; Play Clip</button>
+          <button class="btn-replay" id="quiz-replay" style="display:none;">&#8634; Replay</button>
+          <button class="btn-stop" id="quiz-stop" style="display:none;">&#9632; Stop</button>
+        </div>
+        <div class="time-display" id="quiz-time"></div>
+        <div class="progress-bar"><div class="progress-fill" id="quiz-progress"></div></div>
+
+        <div class="answer-area" id="answer-area" style="display:none;">
+          <input type="text" id="answer-input" placeholder="What piece is this?" autocomplete="off">
+          <br>
+          <button class="submit-btn" id="submit-answer">Submit Answer</button>
+        </div>
+
+        <div class="reveal-area" id="reveal-area" style="display:none;">
+          <div style="font-size:13px;color:#8899aa;">The answer is:</div>
+          <div class="correct-answer" id="correct-answer"></div>
+          <div class="your-answer" id="your-answer"></div>
+          <div style="font-size:13px;color:#aaa;margin-bottom:10px;">How did you do?</div>
+          <div class="grade-buttons">
+            <button class="btn-right" data-grade="right">Right</button>
+            <button class="btn-close" data-grade="close">Close</button>
+            <button class="btn-wrong" data-grade="wrong">Wrong</button>
+          </div>
+        </div>
+
+        <div id="graded-area" style="display:none;">
+          <button class="next-btn" id="next-question">Next Question &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDY VIEW -->
+  <div id="study-view" class="view">
+    <h2>Study Mode</h2>
+    <p style="color:#8899aa;margin-bottom:16px;">Click any loaded piece to listen. Use this to familiarize yourself before quizzing.</p>
+    <div id="study-no-songs" class="no-songs-msg" style="display:none;">
+      <p>No songs loaded. <a id="go-to-library2">Go to Library</a> first.</p>
+    </div>
+    <ul class="study-list" id="study-list"></ul>
+    <div id="study-player" style="display:none;margin-top:20px;text-align:center;">
+      <div id="study-now-playing" style="color:#e94560;font-size:16px;margin-bottom:10px;"></div>
+      <div class="player-controls">
+        <button class="btn-play" id="study-play">&#9654; Play Full</button>
+        <button class="btn-replay" id="study-random">&#127922; Random 60s</button>
+        <button class="btn-stop" id="study-stop">&#9632; Stop</button>
+      </div>
+      <div class="time-display" id="study-time"></div>
+    </div>
+  </div>
+
+  <!-- STATS VIEW -->
+  <div id="stats-view" class="view">
+    <h2>Progress & Stats</h2>
+    <div class="stats-overview" id="stats-overview"></div>
+    <table class="stats-table">
+      <thead>
+        <tr><th>Piece</th><th>Attempts</th><th>Accuracy</th><th>Mastery</th></tr>
+      </thead>
+      <tbody id="stats-tbody"></tbody>
+    </table>
+    <button class="reset-btn" id="reset-stats">Reset All Stats</button>
+  </div>
+</div>
+
+<script>
+// ==================== SONG DATA ====================
+const PIECES = [
+  { id: 'introit', name: 'Introit', composer: '', period: 'Medieval' },
+  { id: 'kyrie', name: 'Kyrie', composer: '', period: 'Medieval' },
+  { id: 'alleluia', name: 'Alleluia', composer: '', period: 'Medieval' },
+  { id: 'leoninus_alleluia', name: "Leoninus' Alleluia", composer: 'Leoninus', period: 'Medieval' },
+  { id: 'viderunt_omnes', name: "Perotinus' Viderunt Omnes", composer: 'Perotinus', period: 'Medieval' },
+  { id: 'byrd_agnus_dei', name: 'Agnus Dei', composer: 'Byrd', period: 'Renaissance' },
+  { id: 'byrd_sweet_merry', name: 'This Sweet and Merry Month of May', composer: 'Byrd', period: 'Renaissance' },
+  { id: 'dowland_can_she', name: 'Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance' },
+  { id: 'dowland_arrangements', name: 'Arrangements of Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance' },
+  { id: 'monteverdi_ritornello', name: "Opening Ritornello and Prologue (L'Orfeo)", composer: 'Monteverdi', period: 'Baroque' },
+  { id: 'monteverdi_lament', name: "Orfeo's Lament", composer: 'Monteverdi', period: 'Baroque' },
+  { id: 'handel_shepherds', name: 'There were shepherds (Messiah)', composer: 'Handel', period: 'Baroque' },
+  { id: 'handel_every_valley', name: "Ev'ry Valley (Messiah)", composer: 'Handel', period: 'Baroque' },
+  { id: 'handel_hallelujah', name: 'Hallelujah chorus (Messiah)', composer: 'Handel', period: 'Baroque' },
+  { id: 'handel_he_trusted', name: 'He trusted in God (Messiah)', composer: 'Handel', period: 'Baroque' },
+  { id: 'bach_prelude_fugue', name: 'Prelude and Fugue in C Minor', composer: 'Bach', period: 'Baroque' },
+  { id: 'mozart_notte', name: 'Notte e giorno faticar (Don Giovanni)', composer: 'Mozart', period: 'Classical' },
+  { id: 'mozart_ensemble', name: 'Ensemble, Act I, Scene I (Don Giovanni)', composer: 'Mozart', period: 'Classical' },
+  { id: 'mozart_la_ci', name: 'Là ci darem la mano (Don Giovanni)', composer: 'Mozart', period: 'Classical' },
+  { id: 'beethoven_5_mvt1', name: 'Symphony No. 5 in C Minor - Mvt. 1', composer: 'Beethoven', period: 'Classical/Romantic' },
+  { id: 'beethoven_5_mvt2', name: 'Symphony No. 5 in C Minor - Mvt. 2', composer: 'Beethoven', period: 'Classical/Romantic' },
+  { id: 'beethoven_5_mvt3', name: 'Symphony No. 5 in C Minor - Mvt. 3', composer: 'Beethoven', period: 'Classical/Romantic' },
+  { id: 'schubert_gretchen', name: 'Gretchen at the Spinning Wheel', composer: 'Schubert', period: 'Romantic' },
+  { id: 'schubert_erlking', name: 'The Erlking', composer: 'Schubert', period: 'Romantic' },
+  { id: 'mendelssohn_violin', name: 'Violin Concerto in E Minor - Mvt. 1', composer: 'Mendelssohn', period: 'Romantic' },
+  { id: 'chopin_waltz', name: 'Waltz Op. 34, No. 1 in A-flat (Valse brillante)', composer: 'Chopin', period: 'Romantic' },
+  { id: 'berlioz_sym_mvt1', name: 'Fantastic Symphony - Mvt. 1 (Reveries - Passions)', composer: 'Berlioz', period: 'Romantic' },
+  { id: 'berlioz_sym_mvt4', name: 'Fantastic Symphony - Mvt. 4 (March to the Scaffold)', composer: 'Berlioz', period: 'Romantic' },
+  { id: 'berlioz_sym_mvt5', name: "Fantastic Symphony - Mvt. 5 (Dream of a Witches' Sabbath)", composer: 'Berlioz', period: 'Romantic' },
+  { id: 'brahms_clarinet', name: 'Clarinet Quintet in B Minor - Opening', composer: 'Brahms', period: 'Romantic' },
+];
+
+// ==================== STATE ====================
+const STATE_KEY = 'music_quiz_stats';
+const ASSIGN_KEY = 'music_quiz_assignments';
+let audioFiles = {}; // id -> { url, fileName }
+let currentAudio = null;
+let clipTimeout = null;
+let quizState = { currentPieceId: null, answered: false, graded: false };
+let sessionStats = { right: 0, close: 0, wrong: 0 };
+let progressInterval = null;
+
+function loadStats() {
+  try { return JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch { return {}; }
+}
+function saveStats(stats) {
+  localStorage.setItem(STATE_KEY, JSON.stringify(stats));
+}
+function loadAssignments() {
+  try { return JSON.parse(localStorage.getItem(ASSIGN_KEY)) || {}; } catch { return {}; }
+}
+function saveAssignments(assignments) {
+  localStorage.setItem(ASSIGN_KEY, JSON.stringify(assignments));
+}
+
+function getStats(id) {
+  const all = loadStats();
+  return all[id] || { attempts: 0, right: 0, close: 0, wrong: 0, streak: 0, lastSeen: null };
+}
+function updateStats(id, grade) {
+  const all = loadStats();
+  const s = all[id] || { attempts: 0, right: 0, close: 0, wrong: 0, streak: 0, lastSeen: null };
+  s.attempts++;
+  s[grade]++;
+  s.lastSeen = Date.now();
+  if (grade === 'right') s.streak++; else s.streak = 0;
+  all[id] = s;
+  saveStats(all);
+}
+
+function getAccuracy(s) {
+  if (!s.attempts) return -1;
+  return (s.right + s.close * 0.5) / s.attempts;
+}
+
+function getWeight(id) {
+  const s = getStats(id);
+  if (s.attempts === 0) return 5; // never seen = high priority
+  return Math.max(1, 3 + s.wrong * 2 + s.close * 1 - s.right * 0.5 - s.streak * 0.5);
+}
+
+// ==================== AUDIO ====================
+function stopAudio() {
+  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
+  if (clipTimeout) { clearTimeout(clipTimeout); clipTimeout = null; }
+  if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+}
+
+function playClip(id, startTime, duration, onTimeUpdate, onEnd) {
+  stopAudio();
+  const file = audioFiles[id];
+  if (!file) return;
+  const audio = new Audio(file.url);
+  currentAudio = audio;
+
+  audio.addEventListener('loadedmetadata', () => {
+    const maxStart = Math.max(0, audio.duration - duration);
+    const start = startTime !== undefined ? Math.min(startTime, maxStart) : Math.random() * maxStart;
+    audio.currentTime = start;
+    audio.play();
+
+    if (onTimeUpdate) {
+      progressInterval = setInterval(() => {
+        const elapsed = audio.currentTime - start;
+        onTimeUpdate(elapsed, duration, audio.currentTime);
+      }, 200);
+    }
+
+    clipTimeout = setTimeout(() => {
+      audio.pause();
+      if (progressInterval) clearInterval(progressInterval);
+      if (onEnd) onEnd();
+    }, duration * 1000);
+  });
+
+  audio.addEventListener('error', () => {
+    console.error('Audio error for', id);
+  });
+
+  return audio;
+}
+
+function playFull(id, onTimeUpdate) {
+  stopAudio();
+  const file = audioFiles[id];
+  if (!file) return;
+  const audio = new Audio(file.url);
+  currentAudio = audio;
+  audio.play();
+  if (onTimeUpdate) {
+    audio.addEventListener('loadedmetadata', () => {
+      progressInterval = setInterval(() => {
+        onTimeUpdate(audio.currentTime, audio.duration, audio.currentTime);
+      }, 200);
+    });
+  }
+  audio.addEventListener('ended', () => { if (progressInterval) clearInterval(progressInterval); });
+  return audio;
+}
+
+// ==================== FILE HANDLING ====================
+function fuzzyMatch(fileName) {
+  const lower = fileName.toLowerCase().replace(/\.mp3$/i, '').replace(/[_\-]/g, ' ');
+  let bestMatch = null;
+  let bestScore = 0;
+
+  for (const piece of PIECES) {
+    const targets = [piece.name.toLowerCase(), piece.id.replace(/_/g, ' ')];
+    if (piece.composer) targets.push(piece.composer.toLowerCase());
+
+    for (const target of targets) {
+      // Check if filename contains key parts of the piece name
+      const words = target.split(/\s+/);
+      let matchedWords = 0;
+      for (const word of words) {
+        if (word.length > 2 && lower.includes(word)) matchedWords++;
+      }
+      const score = words.length > 0 ? matchedWords / words.length : 0;
+      if (score > bestScore && score >= 0.4) {
+        bestScore = score;
+        bestMatch = piece.id;
+      }
+    }
+  }
+  return bestMatch;
+}
+
+function handleFiles(files) {
+  const assignments = loadAssignments();
+  for (const file of files) {
+    if (!file.type.startsWith('audio/') && !file.name.endsWith('.mp3')) continue;
+    const url = URL.createObjectURL(file);
+
+    // Try to auto-match
+    let matchId = fuzzyMatch(file.name);
+
+    // Check saved assignments
+    if (assignments[file.name]) {
+      matchId = assignments[file.name];
+    }
+
+    if (matchId) {
+      audioFiles[matchId] = { url, fileName: file.name };
+      assignments[file.name] = matchId;
+    } else {
+      // Prompt user to assign
+      showAssignDialog(file, url);
+    }
+  }
+  saveAssignments(assignments);
+  renderLibrary();
+  renderStudyList();
+}
+
+function showAssignDialog(file, url) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:100;';
+  const dialog = document.createElement('div');
+  dialog.style.cssText = 'background:#16213e;padding:24px;border-radius:12px;max-width:400px;width:90%;max-height:80vh;overflow-y:auto;';
+  dialog.innerHTML = `<h3 style="margin-bottom:8px;color:#e94560;">Assign: ${file.name}</h3>
+    <p style="color:#8899aa;font-size:13px;margin-bottom:12px;">Which piece is this?</p>
+    <div id="assign-list"></div>
+    <button style="margin-top:12px;padding:8px 16px;background:#333;border:none;color:#ccc;border-radius:6px;cursor:pointer;" id="assign-skip">Skip</button>`;
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  const list = dialog.querySelector('#assign-list');
+  const unassigned = PIECES.filter(p => !audioFiles[p.id]);
+  (unassigned.length ? unassigned : PIECES).forEach(p => {
+    const btn = document.createElement('button');
+    btn.textContent = (p.composer ? p.composer + ': ' : '') + p.name;
+    btn.style.cssText = 'display:block;width:100%;text-align:left;padding:8px 12px;margin:3px 0;background:#1a1a2e;border:1px solid #0f3460;color:#ccc;border-radius:6px;cursor:pointer;font-size:13px;';
+    btn.onmouseover = () => btn.style.borderColor = '#e94560';
+    btn.onmouseout = () => btn.style.borderColor = '#0f3460';
+    btn.onclick = () => {
+      audioFiles[p.id] = { url, fileName: file.name };
+      const assignments = loadAssignments();
+      assignments[file.name] = p.id;
+      saveAssignments(assignments);
+      document.body.removeChild(overlay);
+      renderLibrary();
+      renderStudyList();
+    };
+    list.appendChild(btn);
+  });
+
+  dialog.querySelector('#assign-skip').onclick = () => document.body.removeChild(overlay);
+}
+
+// ==================== QUIZ ENGINE ====================
+function getLoadedPieces() {
+  return PIECES.filter(p => audioFiles[p.id]);
+}
+
+function pickNextPiece() {
+  const loaded = getLoadedPieces();
+  if (!loaded.length) return null;
+
+  // Weighted random
+  const weights = loaded.map(p => getWeight(p.id));
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < loaded.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return loaded[i];
+  }
+  return loaded[loaded.length - 1];
+}
+
+function startQuizQuestion() {
+  const piece = pickNextPiece();
+  if (!piece) return;
+
+  quizState = { currentPieceId: piece.id, answered: false, graded: false, clipStart: undefined };
+  document.getElementById('answer-area').style.display = 'none';
+  document.getElementById('reveal-area').style.display = 'none';
+  document.getElementById('graded-area').style.display = 'none';
+  document.getElementById('quiz-replay').style.display = 'none';
+  document.getElementById('quiz-stop').style.display = 'none';
+  document.getElementById('quiz-play').style.display = '';
+  document.getElementById('quiz-status').textContent = 'Press Play to hear a clip';
+  document.getElementById('quiz-time').textContent = '';
+  document.getElementById('quiz-progress').style.width = '0%';
+  document.getElementById('answer-input').value = '';
+  document.getElementById('submit-answer').disabled = false;
+}
+
+function playQuizClip() {
+  const id = quizState.currentPieceId;
+  if (!id) return;
+
+  document.getElementById('quiz-play').style.display = 'none';
+  document.getElementById('quiz-replay').style.display = '';
+  document.getElementById('quiz-stop').style.display = '';
+  document.getElementById('quiz-status').textContent = 'Listening... What piece is this?';
+  if (!quizState.answered) document.getElementById('answer-area').style.display = '';
+
+  // Always pick a new random start
+  const file = audioFiles[id];
+  const tempAudio = new Audio(file.url);
+  tempAudio.addEventListener('loadedmetadata', () => {
+    const duration = 60;
+    const maxStart = Math.max(0, tempAudio.duration - duration);
+    const start = Math.random() * maxStart;
+    quizState.clipStart = start;
+    tempAudio.pause();
+
+    playClip(id, start, duration,
+      (elapsed, total) => {
+        document.getElementById('quiz-progress').style.width = (elapsed / total * 100) + '%';
+        const secs = Math.floor(elapsed);
+        document.getElementById('quiz-time').textContent = `${secs}s / ${total}s`;
+      },
+      () => {
+        document.getElementById('quiz-status').textContent = 'Clip ended. What piece is this?';
+        document.getElementById('quiz-stop').style.display = 'none';
+      }
+    );
+  });
+}
+
+// ==================== RENDERING ====================
+function renderLibrary() {
+  const list = document.getElementById('song-list');
+  list.innerHTML = '';
+  const allStats = loadStats();
+
+  PIECES.forEach(p => {
+    const loaded = !!audioFiles[p.id];
+    const s = allStats[p.id] || { attempts: 0, right: 0, close: 0, wrong: 0 };
+    const acc = getAccuracy(s);
+    const li = document.createElement('li');
+    li.className = 'song-item';
+
+    let accHtml = '';
+    if (acc >= 0) {
+      const pct = Math.round(acc * 100);
+      const cls = pct >= 80 ? 'mastery-high' : pct >= 50 ? 'mastery-mid' : 'mastery-low';
+      accHtml = `<span class="accuracy mastery-badge ${cls}">${pct}%</span>`;
+    }
+
+    li.innerHTML = `
+      <span class="status ${loaded ? 'loaded' : 'missing'}"></span>
+      <span class="name">${p.composer ? p.composer + ': ' : ''}${p.name}</span>
+      ${loaded ? `<span class="file-label">${audioFiles[p.id].fileName}</span>` : ''}
+      ${accHtml}
+      <button class="assign-btn" data-id="${p.id}">${loaded ? 'Change' : 'Load'} MP3</button>
+    `;
+    list.appendChild(li);
+
+    li.querySelector('.assign-btn').addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.mp3,audio/*';
+      input.onchange = () => {
+        if (input.files[0]) {
+          const url = URL.createObjectURL(input.files[0]);
+          audioFiles[p.id] = { url, fileName: input.files[0].name };
+          const assignments = loadAssignments();
+          assignments[input.files[0].name] = p.id;
+          saveAssignments(assignments);
+          renderLibrary();
+          renderStudyList();
+        }
+      };
+      input.click();
+    });
+  });
+}
+
+function renderStudyList() {
+  const list = document.getElementById('study-list');
+  list.innerHTML = '';
+  const loaded = getLoadedPieces();
+
+  document.getElementById('study-no-songs').style.display = loaded.length ? 'none' : '';
+
+  loaded.forEach(p => {
+    const li = document.createElement('li');
+    li.className = 'study-item';
+    li.dataset.id = p.id;
+    li.innerHTML = `<span class="name">${p.composer ? p.composer + ': ' : ''}${p.name}</span>`;
+    li.onclick = () => {
+      document.querySelectorAll('.study-item').forEach(el => el.classList.remove('playing'));
+      li.classList.add('playing');
+      document.getElementById('study-player').style.display = '';
+      document.getElementById('study-now-playing').textContent = (p.composer ? p.composer + ': ' : '') + p.name;
+      document.getElementById('study-player').dataset.id = p.id;
+      stopAudio();
+    };
+    list.appendChild(li);
+  });
+}
+
+function renderStats() {
+  const allStats = loadStats();
+  const overview = document.getElementById('stats-overview');
+  const tbody = document.getElementById('stats-tbody');
+
+  let totalAttempts = 0, totalRight = 0, totalClose = 0, totalWrong = 0;
+  let piecesAttempted = 0;
+  const loaded = getLoadedPieces().length;
+
+  PIECES.forEach(p => {
+    const s = allStats[p.id];
+    if (s && s.attempts > 0) {
+      totalAttempts += s.attempts;
+      totalRight += s.right;
+      totalClose += s.close;
+      totalWrong += s.wrong;
+      piecesAttempted++;
+    }
+  });
+
+  const overallAcc = totalAttempts ? Math.round((totalRight + totalClose * 0.5) / totalAttempts * 100) : 0;
+
+  overview.innerHTML = `
+    <div class="stat-card"><div class="number">${overallAcc}%</div><div class="label">Overall Accuracy</div></div>
+    <div class="stat-card"><div class="number">${totalAttempts}</div><div class="label">Total Attempts</div></div>
+    <div class="stat-card"><div class="number">${piecesAttempted}/${PIECES.length}</div><div class="label">Pieces Attempted</div></div>
+    <div class="stat-card"><div class="number">${loaded}</div><div class="label">Songs Loaded</div></div>
+  `;
+
+  tbody.innerHTML = '';
+  PIECES.forEach(p => {
+    const s = allStats[p.id] || { attempts: 0, right: 0, close: 0, wrong: 0, streak: 0 };
+    const acc = getAccuracy(s);
+    let masteryClass, masteryText;
+    if (s.attempts === 0) { masteryClass = 'mastery-none'; masteryText = 'Not tested'; }
+    else if (acc >= 0.8) { masteryClass = 'mastery-high'; masteryText = 'Mastered'; }
+    else if (acc >= 0.5) { masteryClass = 'mastery-mid'; masteryText = 'Learning'; }
+    else { masteryClass = 'mastery-low'; masteryText = 'Needs work'; }
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.composer ? p.composer + ': ' : ''}${p.name}</td>
+      <td>${s.attempts} (${s.right}R/${s.close}C/${s.wrong}W)</td>
+      <td>${s.attempts ? Math.round(acc * 100) + '%' : '—'}</td>
+      <td><span class="mastery-badge ${masteryClass}">${masteryText}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ==================== EVENT HANDLERS ====================
+// Navigation
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.view + '-view').classList.add('active');
+    stopAudio();
+    if (btn.dataset.view === 'stats') renderStats();
+    if (btn.dataset.view === 'quiz') {
+      const loaded = getLoadedPieces();
+      document.getElementById('quiz-no-songs').style.display = loaded.length ? 'none' : '';
+      document.getElementById('quiz-content').style.display = loaded.length ? '' : 'none';
+      if (loaded.length && !quizState.currentPieceId) startQuizQuestion();
+    }
+    if (btn.dataset.view === 'study') renderStudyList();
+  });
+});
+
+// Drop zone
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', () => { handleFiles(fileInput.files); fileInput.value = ''; });
+
+// Folder input
+document.getElementById('load-folder-btn').addEventListener('click', () => document.getElementById('folder-input').click());
+document.getElementById('folder-input').addEventListener('change', function() { handleFiles(this.files); this.value = ''; });
+
+// Quiz controls
+document.getElementById('quiz-play').addEventListener('click', playQuizClip);
+document.getElementById('quiz-replay').addEventListener('click', playQuizClip);
+document.getElementById('quiz-stop').addEventListener('click', () => {
+  stopAudio();
+  document.getElementById('quiz-stop').style.display = 'none';
+  document.getElementById('quiz-status').textContent = 'Stopped. You can replay or submit your answer.';
+});
+
+document.getElementById('submit-answer').addEventListener('click', () => {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const piece = PIECES.find(p => p.id === quizState.currentPieceId);
+  document.getElementById('correct-answer').textContent = (piece.composer ? piece.composer + ': ' : '') + piece.name;
+  document.getElementById('your-answer').textContent = 'Your answer: ' + (document.getElementById('answer-input').value || '(blank)');
+  document.getElementById('answer-area').style.display = 'none';
+  document.getElementById('reveal-area').style.display = '';
+  document.getElementById('submit-answer').disabled = true;
+});
+
+document.getElementById('answer-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('submit-answer').click();
+});
+
+// Grade buttons
+document.querySelectorAll('.grade-buttons button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const grade = btn.dataset.grade;
+    updateStats(quizState.currentPieceId, grade);
+    sessionStats[grade]++;
+    quizState.graded = true;
+
+    document.getElementById('session-correct').textContent = sessionStats.right;
+    document.getElementById('session-close').textContent = sessionStats.close;
+    document.getElementById('session-wrong').textContent = sessionStats.wrong;
+    const total = sessionStats.right + sessionStats.close + sessionStats.wrong;
+    const acc = Math.round((sessionStats.right + sessionStats.close * 0.5) / total * 100);
+    document.getElementById('session-accuracy').textContent = acc + '% accuracy';
+
+    document.getElementById('reveal-area').style.display = 'none';
+    document.getElementById('graded-area').style.display = '';
+  });
+});
+
+document.getElementById('next-question').addEventListener('click', () => {
+  stopAudio();
+  startQuizQuestion();
+});
+
+// Study mode controls
+document.getElementById('study-play').addEventListener('click', () => {
+  const id = document.getElementById('study-player').dataset.id;
+  if (id) playFull(id, (cur, dur) => {
+    document.getElementById('study-time').textContent = `${Math.floor(cur)}s / ${Math.floor(dur)}s`;
+  });
+});
+document.getElementById('study-random').addEventListener('click', () => {
+  const id = document.getElementById('study-player').dataset.id;
+  if (id) playClip(id, undefined, 60,
+    (elapsed, total) => { document.getElementById('study-time').textContent = `${Math.floor(elapsed)}s / ${total}s`; },
+    () => { document.getElementById('study-time').textContent = 'Clip ended'; }
+  );
+});
+document.getElementById('study-stop').addEventListener('click', () => {
+  stopAudio();
+  document.getElementById('study-time').textContent = '';
+});
+
+// Go to library links
+document.getElementById('go-to-library').addEventListener('click', () => {
+  document.querySelector('[data-view="library"]').click();
+});
+document.getElementById('go-to-library2').addEventListener('click', () => {
+  document.querySelector('[data-view="library"]').click();
+});
+
+// Reset stats
+document.getElementById('reset-stats').addEventListener('click', () => {
+  if (confirm('Reset all quiz stats? This cannot be undone.')) {
+    localStorage.removeItem(STATE_KEY);
+    sessionStats = { right: 0, close: 0, wrong: 0 };
+    document.getElementById('session-correct').textContent = '0';
+    document.getElementById('session-close').textContent = '0';
+    document.getElementById('session-wrong').textContent = '0';
+    document.getElementById('session-accuracy').textContent = '';
+    renderStats();
+    renderLibrary();
+  }
+});
+
+// ==================== INIT ====================
+renderLibrary();
+</script>
+</body>
+</html>
