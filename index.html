@@ -486,6 +486,30 @@ body.player-open #study-view { padding-bottom: 80px; }
         <span class="term-chip">Program music</span><span class="term-chip">Romantic</span><span class="term-chip">Idee fixe</span>
       </div>
     </div>
+
+    <h2 style="margin-top:30px;">Quick Review Q&A</h2>
+    <div class="terms-section" id="qa-section">
+      <div class="id-row"><div class="id-key">Gregorian Chant songs?</div><div class="id-pieces">Introit, Kyrie, Alleluia, Leoninus' Alleluia, Perotinus' Viderunt Omnes</div></div>
+      <div class="id-row"><div class="id-key">Renaissance artists?</div><div class="id-pieces">Byrd, Dowland</div></div>
+      <div class="id-row"><div class="id-key">Byrd's songs?</div><div class="id-pieces">Agnus Dei, This Sweet and Merry Month of May</div></div>
+      <div class="id-row"><div class="id-key">Dowland's songs?</div><div class="id-pieces">Can She Excuse My Wrongs, Arrangements of same</div></div>
+      <div class="id-row"><div class="id-key">Baroque artists?</div><div class="id-pieces">Monteverdi, Handel, Bach</div></div>
+      <div class="id-row"><div class="id-key">Monteverdi's play?</div><div class="id-pieces">L'Orfeo</div></div>
+      <div class="id-row"><div class="id-key">Monteverdi's songs?</div><div class="id-pieces">Opening Ritornello and Prologue, Orfeo's Lament</div></div>
+      <div class="id-row"><div class="id-key">Handel's play?</div><div class="id-pieces">The Messiah</div></div>
+      <div class="id-row"><div class="id-key">Handel's songs?</div><div class="id-pieces">There were shepherds, Ev'ry Valley, Hallelujah chorus, He trusted in God</div></div>
+      <div class="id-row"><div class="id-key">Bach's songs?</div><div class="id-pieces">Prelude and Fugue in C Minor</div></div>
+      <div class="id-row"><div class="id-key">Classical artists?</div><div class="id-pieces">Mozart, Beethoven, Schubert</div></div>
+      <div class="id-row"><div class="id-key">Mozart's play?</div><div class="id-pieces">Don Giovanni</div></div>
+      <div class="id-row"><div class="id-key">Mozart's songs?</div><div class="id-pieces">Notte e giorno faticar, Ensemble Act I Scene I, La ci darem la mano</div></div>
+      <div class="id-row"><div class="id-key">Beethoven's songs?</div><div class="id-pieces">Symphony No. 5 in C Minor (Mvts 1-3)</div></div>
+      <div class="id-row"><div class="id-key">Schubert's songs?</div><div class="id-pieces">Gretchen at the Spinning Wheel, The Erlking</div></div>
+      <div class="id-row"><div class="id-key">Romantic artists?</div><div class="id-pieces">Mendelssohn, Chopin, Berlioz, Brahms</div></div>
+      <div class="id-row"><div class="id-key">Mendelssohn's songs?</div><div class="id-pieces">Violin Concerto in E Minor</div></div>
+      <div class="id-row"><div class="id-key">Chopin's songs?</div><div class="id-pieces">Opus 34 No. 1 in A-flat (Valse brillante)</div></div>
+      <div class="id-row"><div class="id-key">Berlioz's symphony?</div><div class="id-pieces">Fantastic Symphony: Mvt 1 (Reveries-Passions), Mvt 4 (March to the Scaffold), Mvt 5 (Dream of a Witches' Sabbath)</div></div>
+      <div class="id-row"><div class="id-key">Brahms's songs?</div><div class="id-pieces">Clarinet Quintet in B Minor (opening)</div></div>
+    </div>
   </div>
 
   <!-- STATS VIEW -->
@@ -525,94 +549,94 @@ const PERIOD_INFO = {
 };
 const PIECES = [
   { id: 'introit', name: 'Introit', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
-    desc: 'Monophony (Latin). All repeating a word and long notes. One melody repeated and typically singing together.',
+    desc: 'Monophony (Latin). "Puer natus est." All repeating a word and long notes. One melody, singing together.',
     artistTheme: 'Gregorian Chants: no instruments, monophonic, repeating words with long sustained notes.' },
   { id: 'kyrie', name: 'Kyrie', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
-    desc: 'Monophony (Greek). Syllables stretched out for many notes (melisma). Listen for the first word "Kyrie".',
+    desc: 'Monophony (Greek). EHHHHH — melisma (stretching syllables for many notes). Listen for first word "Kyrie".',
     artistTheme: 'Gregorian Chants: no instruments, monophonic, repeating words with long sustained notes.' },
   { id: 'alleluia', name: 'Alleluia', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
     desc: 'Monophony (Latin). Listen for the first word "Alleluia" — this one is in monophony.',
     artistTheme: 'Gregorian Chants: no instruments, monophonic, repeating words with long sustained notes.' },
   { id: 'leoninus_alleluia', name: "Leoninus' Alleluia", composer: 'Leoninus', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
-    desc: 'Polyphony (Latin). Listen for "Alleluia" — this one is in polyphony. Different melody sung at the same time (early organum).',
+    desc: 'Polyphony (Latin). Discant — harmonizing with bass-soprano. Listen for "Alleluia" — this one is in polyphony (different melodies at same time).',
     artistTheme: 'Early polyphony: multiple voices over chant. Organum.' },
   { id: 'viderunt_omnes', name: "Perotinus' Viderunt Omnes", composer: 'Perotinus', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
     desc: 'Polyphony (Latin). Multiple voices singing simultaneously. More complex than Leoninus.',
     artistTheme: 'Early polyphony: multiple voices over chant. Organum.' },
   { id: 'byrd_agnus_dei', name: 'Agnus Dei', composer: 'Byrd', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Homophony (Latin). Imitative polyphony. No instruments. Sung in Latin.',
+    desc: 'Cascading/paired polyphonic imitation. No instruments. Sung in Latin. Sounds super angelic.',
     artistTheme: 'Byrd: no instruments. Imitative polyphony.' },
   { id: 'byrd_sweet_merry', name: 'This Sweet and Merry Month of May', composer: 'Byrd', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Homophony (English). Polyphony with short notes, in English. Uses an instrument. Sounds like something to drink ale to.',
+    desc: 'Sounds like chirping birds — polyphony pops off. In English. Short notes. Sounds like something to drink ale to.',
     artistTheme: 'Byrd: no instruments. Imitative polyphony.' },
   { id: 'dowland_can_she', name: 'Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Homophony (English). In English with lute. Sounds like a Renaissance quest.',
+    desc: 'Madrigal (secular). Either a teen boy or deep voice woman singing. In English with lute. Renaissance quest vibes. Arrangements have similar melody in different ways.',
     artistTheme: 'Dowland: uses instruments, in English, sounds like quest music. Plucking instrument (lute).' },
   { id: 'dowland_arrangements', name: 'Arrangements of Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance', play: '', classDate: '2/3',
     desc: 'Instrument picking strings, no singing. Variations include polyphony with singing and instruments.',
     artistTheme: 'Dowland: uses instruments, in English, sounds like quest music. Plucking instrument (lute).' },
   { id: 'monteverdi_ritornello', name: "Opening Ritornello and Prologue (L'Orfeo)", composer: 'Monteverdi', period: 'Baroque', play: "L'Orfeo", classDate: '2/5',
-    desc: 'Lute + harpsichord (Italian). Just her voice and one instrument. Violin also. Between singing and speaking. Not in English.',
+    desc: 'Harpsichord heavy with lady opera. Between singing and speaking. Violin also. Not in English.',
     artistTheme: "Monteverdi's Orfeo: solo singer with minimal accompaniment. Between singing and speaking. Not in English." },
   { id: 'monteverdi_lament', name: "Orfeo's Lament", composer: 'Monteverdi', period: 'Baroque', play: "L'Orfeo", classDate: '2/5',
-    desc: 'Lute + harpsichord (Italian). One instrument and organ. Solo voice with minimal accompaniment.',
+    desc: 'Also known as "Tu Se Morta" / "Possente Spirito". One instrument and organ. Solo voice with minimal accompaniment.',
     artistTheme: "Monteverdi's Orfeo: solo singer with minimal accompaniment. Between singing and speaking. Not in English." },
   { id: 'handel_shepherds', name: 'There were shepherds (Messiah)', composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
-    desc: 'Orchestra (English). Instrument plays under singer. Violins. In English.',
+    desc: 'Woman singing. Oscillating strings + harpsichord. In English.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
   { id: 'handel_every_valley', name: "Ev'ry Valley (Messiah)", composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
-    desc: 'Orchestra (English). Multiple instruments and a fugue. Instruments mimic singer. In English.',
+    desc: 'Man singing. Upbeat imitation. Harpsichord. Instruments mimic singer. In English.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
   { id: 'handel_hallelujah', name: 'Hallelujah chorus (Messiah)', composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
     desc: 'Orchestra (English). Multiple people singing and repeating. Instruments louder during singing.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
   { id: 'handel_he_trusted', name: 'He trusted in God (Messiah)', composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
-    desc: 'Orchestra (English). Men and women singing. High and low at same time. Fast notes. Almost Renaissance-like but more complex instruments.',
+    desc: 'Polyphonic imitation. Men and women singing. High and low at same time. Fast notes. Almost Renaissance-like but more complex instruments.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
   { id: 'bach_prelude_fugue', name: 'Prelude and Fugue in C Minor', composer: 'Bach', period: 'Baroque', play: '', classDate: '2/12',
-    desc: 'NO SINGING. Solo harpsichord. Very fast strokes, sounds piano-like but plucking. Two counter-subjects, pedal point, ends with Picardy third. Always flowing, never a break. Fugue — instruments chasing each other.',
+    desc: 'NO SINGING. He goes ham at the harpsichord. Very fast strokes, sounds piano-like but plucking. Two counter-subjects, pedal point, ends with Picardy third. Always flowing, never a break. Fugue.',
     artistTheme: 'Bach: solo harpsichord. Dramatic, always flowing, constant energy. Fugue structure.' },
   { id: 'mozart_notte', name: 'Notte e giorno faticar (Don Giovanni)', composer: 'Mozart', period: 'Classical', play: 'Don Giovanni', classDate: '2/17',
-    desc: 'Orchestra (Italian). Grander orchestra. Multiple instruments while singing. Dynamics changing and not constant.',
+    desc: 'Orchestra (Italian). Servant singing "nononono." Grander orchestra. Dynamics changing and not constant.',
     artistTheme: "Mozart's Don Giovanni: voices shaking, dynamics shifting, full orchestra. People singing over each other." },
   { id: 'mozart_ensemble', name: 'Ensemble, Act I, Scene I (Don Giovanni)', composer: 'Mozart', period: 'Classical', play: 'Don Giovanni', classDate: '2/17',
-    desc: 'Orchestra (Italian). Man and woman arguing. Multiple people singing. First half arguing, second half polyphonic. "Na na na" sounds.',
+    desc: 'Orchestra (Italian). Three males and woman duet. Dramatic orchestra. First half arguing, second half polyphonic.',
     artistTheme: "Mozart's Don Giovanni: voices shaking, dynamics shifting, full orchestra. People singing over each other." },
   { id: 'mozart_la_ci', name: 'Là ci darem la mano (Don Giovanni)', composer: 'Mozart', period: 'Classical', play: 'Don Giovanni', classDate: '2/17',
-    desc: 'Orchestra (Italian). Soft clarinet in background. Sounds warm like a fireplace.',
+    desc: 'Orchestra (Italian). Waltzing male + woman duet. Soft clarinet in background. Sounds warm like a fireplace.',
     artistTheme: "Mozart's Don Giovanni: voices shaking, dynamics shifting, full orchestra. People singing over each other." },
   { id: 'beethoven_5_mvt1', name: 'Symphony No. 5 in C Minor - Mvt. 1', composer: 'Beethoven', period: 'Classical/Romantic', play: 'Symphony No. 5', classDate: '2/19',
-    desc: 'NO SINGING. Full orchestra. Famous da-da-da-daaa. Fast moving and stressful. Then trumpets like king coming.',
+    desc: 'NO SINGING. Full orchestra. Famous du du du dun. Fast moving and stressful. Then trumpets like king coming.',
     artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
   { id: 'beethoven_5_mvt2', name: 'Symphony No. 5 in C Minor - Mvt. 2', composer: 'Beethoven', period: 'Classical/Romantic', play: 'Symphony No. 5', classDate: '2/19',
-    desc: 'NO SINGING. Full orchestra. Slow and heavy on strings. Trumpet marching band. Normal old school classical.',
+    desc: 'NO SINGING. Full orchestra. Slower strings + orchestra. Trumpet marching band. Normal old school classical.',
     artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
   { id: 'beethoven_5_mvt3', name: 'Symphony No. 5 in C Minor - Mvt. 3', composer: 'Beethoven', period: 'Classical/Romantic', play: 'Symphony No. 5', classDate: '2/19',
-    desc: 'NO SINGING. Full orchestra. Opens creepy, then trumpets/horn arrive. Fast horn transition. Very fast music in the middle.',
+    desc: 'NO SINGING. Full orchestra. Mysterious + grand — something is leading up to something. Fast horn transition. Very fast music in the middle.',
     artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
   { id: 'schubert_gretchen', name: 'Gretchen at the Spinning Wheel', composer: 'Schubert', period: 'Romantic', play: '', classDate: '2/24',
-    desc: 'Only piano (German). Opera singing with very fast piano keys. Sounds like suffering at a spinning wheel. German.',
+    desc: 'Only piano (German). Woman singing with anxious fast piano. Sounds like suffering at a spinning wheel. German.',
     artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
   { id: 'schubert_erlking', name: 'The Erlking', composer: 'Schubert', period: 'Romantic', play: '', classDate: '2/24',
-    desc: 'Only piano (German). Very creepy, like on a road trip. Really fast piano. Major-minor shift. German.',
+    desc: 'Only piano (German). Male with super fast piano. Very creepy, like on a road trip. Major-minor shift. German.',
     artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
   { id: 'mendelssohn_violin', name: 'Violin Concerto in E Minor - Mvt. 1', composer: 'Mendelssohn', period: 'Romantic', play: '', classDate: '2/26',
-    desc: 'NO SINGING. Violin with orchestra. Crying violin opening. Very sad.',
+    desc: 'NO SINGING. Whiney violin with orchestra. Crying violin opening. Very sad.',
     artistTheme: 'Mendelssohn: very sad crying violins.' },
   { id: 'chopin_waltz', name: 'Waltz Op. 34, No. 1 in A-flat (Valse brillante)', composer: 'Chopin', period: 'Romantic', play: '', classDate: '2/26',
-    desc: 'NO SINGING. Only piano. Goes really fast at times. Very major key and happy.',
+    desc: 'NO SINGING. Piano waltz. Dancey ballroom music. Goes really fast at times. Very major key and happy.',
     artistTheme: 'Chopin: piano waltzes. Virtuosic and expressive.' },
   { id: 'berlioz_sym_mvt1', name: 'Fantastic Symphony - Mvt. 1 (Reveries - Passions)', composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
     desc: 'NO SINGING. Horn-centric orchestra. Not a song you would hum to. Program music with idee fixe.',
     artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idee fixe." },
   { id: 'berlioz_sym_mvt4', name: 'Fantastic Symphony - Mvt. 4 (March to the Scaffold)', composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
-    desc: 'NO SINGING. Horn-centric orchestra. March-like.',
+    desc: 'NO SINGING. Horn-centric orchestra. Sounds like a march.',
     artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idee fixe." },
   { id: 'berlioz_sym_mvt5', name: "Fantastic Symphony - Mvt. 5 (Dream of a Witches' Sabbath)", composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
-    desc: "NO SINGING. Horn-centric orchestra. Very creepy like an 80's slasher film. Part sounds chipper and too happy.",
+    desc: "NO SINGING. Horn-centric orchestra. It sounds crazy chaotic (dream of a witch). Very creepy like an 80's slasher film. Part sounds chipper and too happy.",
     artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idee fixe." },
   { id: 'brahms_clarinet', name: 'Clarinet Quintet in B Minor - Opening', composer: 'Brahms', period: 'Romantic', play: '', classDate: '3/5',
-    desc: 'NO SINGING. Clarinet with strings. Chamber music.',
+    desc: 'NO SINGING. Soft clarinet with strings. Chamber music.',
     artistTheme: 'Brahms: late Romantic chamber music.' },
 ];
 
