@@ -125,6 +125,8 @@ h2 { margin-bottom: 16px; }
 .study-detail .detail-label { font-size: 12px; color: #666; text-transform: uppercase; margin-top: 10px; }
 .study-detail .detail-value { font-size: 14px; color: #ccc; margin: 2px 0 8px; }
 .study-detail .detail-desc { font-size: 14px; color: #aab; line-height: 1.5; margin-top: 8px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 3px solid #e94560; }
+.term-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.term-pill { background: #0f3460; color: #8dc8e8; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 500; border: 1px solid rgba(141,200,232,0.2); }
 .study-item .file-tag { font-size: 11px; color: #555; margin-left: auto; }
 .delanie-mode .study-item .name { filter: blur(6px); transition: filter 0.2s; }
 .delanie-mode .study-item .name:hover { filter: none; }
@@ -304,8 +306,12 @@ body.player-open #study-view { padding-bottom: 80px; }
           <div class="id-pieces">Leoninus' Alleluia / Perotinus' Viderunt Omnes<div class="id-tip">Listen for "Alleluia" — this one is in polyphony (multiple voices)</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Polyphony (Latin + English)</div>
-          <div class="id-pieces">Byrd / Dowland<div class="id-tip">Byrd = imitative polyphony, no instruments, angelic. Dowland = lute song with voice. If in English with orchestra, it's Handel.</div></div>
+          <div class="id-key">Polyphony, No Instruments (Latin/English)</div>
+          <div class="id-pieces">Byrd<div class="id-tip">Imitative polyphony, voices only, angelic. Agnus Dei = Latin. Sweet and Merry = English.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Lute Song / Ayre (English)</div>
+          <div class="id-pieces">Dowland<div class="id-tip">Voice + lute (plucking). Quest music vibes. Arrangements = instrumental only.</div></div>
         </div>
         <div class="id-row">
           <div class="id-key">Solo Voice + Continuo (Italian)</div>
@@ -459,25 +465,26 @@ body.player-open #study-view { padding-bottom: 80px; }
     <div class="terms-section">
       <h3>Class 13: Romantic Orchestra</h3>
       <div class="terms-grid">
-        <span class="term-chip">Program music</span><span class="term-chip">Romantic</span><span class="term-chip">Idee fixe</span>
+        <span class="term-chip">Program music</span><span class="term-chip">Romantic</span><span class="term-chip">Idée fixe</span>
       </div>
     </div>
 
     <h2 style="margin-top:30px;">Quick Review Q&A</h2>
     <div class="terms-section" id="qa-section">
-      <div class="id-row"><div class="id-key">Gregorian Chant songs?</div><div class="id-pieces">Introit, Kyrie, Alleluia, Leoninus' Alleluia, Perotinus' Viderunt Omnes</div></div>
+      <div class="id-row"><div class="id-key">Gregorian Chant songs?</div><div class="id-pieces">Introit, Kyrie, Alleluia</div></div>
+      <div class="id-row"><div class="id-key">Medieval Polyphony songs?</div><div class="id-pieces">Leoninus' Alleluia (organum), Perotinus' Viderunt Omnes (organum)</div></div>
       <div class="id-row"><div class="id-key">Renaissance artists?</div><div class="id-pieces">Byrd, Dowland</div></div>
       <div class="id-row"><div class="id-key">Byrd's songs?</div><div class="id-pieces">Agnus Dei, This Sweet and Merry Month of May</div></div>
       <div class="id-row"><div class="id-key">Dowland's songs?</div><div class="id-pieces">Can She Excuse My Wrongs, Arrangements of same</div></div>
       <div class="id-row"><div class="id-key">Baroque artists?</div><div class="id-pieces">Monteverdi, Handel, Bach</div></div>
       <div class="id-row"><div class="id-key">Monteverdi's play?</div><div class="id-pieces">L'Orfeo</div></div>
       <div class="id-row"><div class="id-key">Monteverdi's songs?</div><div class="id-pieces">Opening Ritornello and Prologue, Orfeo's Lament</div></div>
-      <div class="id-row"><div class="id-key">Handel's play?</div><div class="id-pieces">The Messiah</div></div>
+      <div class="id-row"><div class="id-key">Handel's play?</div><div class="id-pieces">Messiah</div></div>
       <div class="id-row"><div class="id-key">Handel's songs?</div><div class="id-pieces">There were shepherds, Ev'ry Valley, Hallelujah chorus, He trusted in God</div></div>
       <div class="id-row"><div class="id-key">Bach's songs?</div><div class="id-pieces">Prelude and Fugue in C Minor</div></div>
       <div class="id-row"><div class="id-key">Classical artists?</div><div class="id-pieces">Mozart, Beethoven, Schubert</div></div>
       <div class="id-row"><div class="id-key">Mozart's play?</div><div class="id-pieces">Don Giovanni</div></div>
-      <div class="id-row"><div class="id-key">Mozart's songs?</div><div class="id-pieces">Notte e giorno faticar, Ensemble Act I Scene I, La ci darem la mano</div></div>
+      <div class="id-row"><div class="id-key">Mozart's songs?</div><div class="id-pieces">Notte e giorno faticar, Ensemble Act I Scene I, Là ci darem la mano</div></div>
       <div class="id-row"><div class="id-key">Beethoven's songs?</div><div class="id-pieces">Symphony No. 5 in C Minor (Mvts 1-3)</div></div>
       <div class="id-row"><div class="id-key">Schubert's songs?</div><div class="id-pieces">Gretchen at the Spinning Wheel, The Erlking</div></div>
       <div class="id-row"><div class="id-key">Romantic artists?</div><div class="id-pieces">Mendelssohn, Chopin, Berlioz, Brahms</div></div>
@@ -532,10 +539,10 @@ const PIECES = [
   { id: 'alleluia', name: 'Alleluia', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
     desc: 'Monophony (Latin). Listen for the first word "Alleluia" — this one is in monophony.',
     artistTheme: 'Gregorian Chants: no instruments, monophonic, repeating words with long sustained notes.' },
-  { id: 'leoninus_alleluia', name: "Leoninus' Alleluia", composer: 'Leoninus', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
+  { id: 'leoninus_alleluia', name: "Leoninus' Alleluia", composer: 'Leoninus', period: 'Medieval', play: 'Medieval Polyphony', classDate: '1/29',
     desc: 'Polyphony (Latin). Discant — harmonizing with bass-soprano. Listen for "Alleluia" — this one is in polyphony (different melodies at same time).',
     artistTheme: 'Early polyphony: multiple voices over chant. Organum.' },
-  { id: 'viderunt_omnes', name: "Perotinus' Viderunt Omnes", composer: 'Perotinus', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
+  { id: 'viderunt_omnes', name: "Perotinus' Viderunt Omnes", composer: 'Perotinus', period: 'Medieval', play: 'Medieval Polyphony', classDate: '1/29',
     desc: 'Polyphony (Latin). Multiple voices singing simultaneously. More complex than Leoninus.',
     artistTheme: 'Early polyphony: multiple voices over chant. Organum.' },
   { id: 'byrd_agnus_dei', name: 'Agnus Dei', composer: 'Byrd', period: 'Renaissance', play: '', classDate: '2/3',
@@ -556,16 +563,16 @@ const PIECES = [
   { id: 'monteverdi_lament', name: "Orfeo's Lament", composer: 'Monteverdi', period: 'Baroque', play: "L'Orfeo", classDate: '2/5',
     desc: 'Also known as "Tu se morta." One instrument and organ. Solo voice with minimal accompaniment.',
     artistTheme: "Monteverdi's Orfeo: solo singer with minimal accompaniment. Between singing and speaking. Not in English." },
-  { id: 'handel_shepherds', name: 'There were shepherds (Messiah)', composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
+  { id: 'handel_shepherds', name: 'There were shepherds (Messiah)', composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
     desc: 'Woman singing. Oscillating strings + harpsichord. In English.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
-  { id: 'handel_every_valley', name: "Ev'ry Valley (Messiah)", composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
+  { id: 'handel_every_valley', name: "Ev'ry Valley (Messiah)", composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
     desc: 'Man singing. Upbeat imitation. Harpsichord. Instruments mimic singer. In English.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
-  { id: 'handel_hallelujah', name: 'Hallelujah chorus (Messiah)', composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
+  { id: 'handel_hallelujah', name: 'Hallelujah chorus (Messiah)', composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
     desc: 'Orchestra (English). Multiple people singing and repeating. Instruments louder during singing.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
-  { id: 'handel_he_trusted', name: 'He trusted in God (Messiah)', composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
+  { id: 'handel_he_trusted', name: 'He trusted in God (Messiah)', composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
     desc: 'Polyphonic imitation. Men and women singing. High and low at same time. Fast notes. Almost Renaissance-like but more complex instruments.',
     artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
   { id: 'bach_prelude_fugue', name: 'Prelude and Fugue in C Minor', composer: 'Bach', period: 'Baroque', play: '', classDate: '2/12',
@@ -590,10 +597,10 @@ const PIECES = [
     desc: 'NO SINGING. Full orchestra. Mysterious + grand — something is leading up to something. Fast horn transition. Very fast music in the middle.',
     artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
   { id: 'schubert_gretchen', name: 'Gretchen at the Spinning Wheel', composer: 'Schubert', period: 'Classical', play: '', classDate: '2/24',
-    desc: 'Only piano (German). Woman singing with anxious fast piano. Sounds like suffering at a spinning wheel. German.',
+    desc: 'Voice + Piano (German). Woman singing with anxious fast piano. Sounds like suffering at a spinning wheel.',
     artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
   { id: 'schubert_erlking', name: 'The Erlking', composer: 'Schubert', period: 'Classical', play: '', classDate: '2/24',
-    desc: 'Only piano (German). Male with super fast piano. Very creepy, like on a road trip. Major-minor shift. German.',
+    desc: 'Voice + Piano (German). Male with super fast piano. Very creepy, like on a road trip. Major-minor shift.',
     artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
   { id: 'mendelssohn_violin', name: 'Violin Concerto in E Minor - Mvt. 1', composer: 'Mendelssohn', period: 'Romantic', play: '', classDate: '2/26',
     desc: 'NO SINGING. Whiney violin with orchestra. Crying violin opening. Very sad.',
@@ -602,18 +609,52 @@ const PIECES = [
     desc: 'NO SINGING. Piano waltz. Dancey ballroom music. Goes really fast at times. Very major key and happy.',
     artistTheme: 'Chopin: piano waltzes. Virtuosic and expressive.' },
   { id: 'berlioz_sym_mvt1', name: 'Fantastic Symphony - Mvt. 1 (Reveries - Passions)', composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
-    desc: 'NO SINGING. Horn-centric orchestra. Not a song you would hum to. Program music with idee fixe.',
-    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idee fixe." },
+    desc: 'NO SINGING. Horn-centric orchestra. Not a song you would hum to. Program music with idée fixe.',
+    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idée fixe." },
   { id: 'berlioz_sym_mvt4', name: 'Fantastic Symphony - Mvt. 4 (March to the Scaffold)', composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
     desc: 'NO SINGING. Horn-centric orchestra. Sounds like a march.',
-    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idee fixe." },
+    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idée fixe." },
   { id: 'berlioz_sym_mvt5', name: "Fantastic Symphony - Mvt. 5 (Dream of a Witches' Sabbath)", composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
     desc: "NO SINGING. Horn-centric orchestra. It sounds crazy chaotic (dream of a witch). Very creepy like an 80's slasher film. Part sounds chipper and too happy.",
-    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idee fixe." },
+    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idée fixe." },
   { id: 'brahms_clarinet', name: 'Clarinet Quintet in B Minor - Opening', composer: 'Brahms', period: 'Romantic', play: '', classDate: '3/5',
     desc: 'NO SINGING. Soft clarinet with strings. Chamber music.',
     artistTheme: 'Brahms: late Romantic chamber music.' },
 ];
+
+// ==================== PIECE TERMS ====================
+const PIECE_TERMS = {
+  introit: ['Monophonic', 'Latin', 'Melisma', 'Pitch', 'Melody'],
+  kyrie: ['Monophonic', 'Greek', 'Melisma', 'Pitch', 'Melody'],
+  alleluia: ['Monophonic', 'Latin', 'Melisma'],
+  leoninus_alleluia: ['Polyphonic', 'Latin', 'Organum', 'Discant', 'Strands', 'Sustained note'],
+  viderunt_omnes: ['Polyphonic', 'Latin', 'Organum', 'Strands', 'Sustained note'],
+  byrd_agnus_dei: ['Imitative polyphony', 'Latin', 'Motet', 'Soprano', 'Alto', 'Tenor', 'Bass'],
+  byrd_sweet_merry: ['Imitative polyphony', 'English', 'Madrigal', 'Word painting'],
+  dowland_can_she: ['English', 'Arrangement', 'Homophony', 'Lute'],
+  dowland_arrangements: ['Arrangement', 'Instrumental'],
+  monteverdi_ritornello: ['Ritornello', 'Strophic variation', 'Basso continuo', 'Italian', 'Baroque'],
+  monteverdi_lament: ['Basso continuo', 'Glottal strokes', 'Recitative', 'Italian', 'Baroque'],
+  handel_shepherds: ['Recitative', 'English', 'Baroque', 'Basso continuo'],
+  handel_every_valley: ['Aria', 'English', 'Baroque', 'Melisma', 'Cadenza'],
+  handel_hallelujah: ['Homophony', 'Polyphonic', 'English', 'Baroque', 'Forte', 'Piano'],
+  handel_he_trusted: ['Imitative polyphony', 'English', 'Baroque', 'Fugue'],
+  bach_prelude_fugue: ['Fugue', 'Exposition', 'Subject', 'Episode', 'Counter subject', 'Pedal point', 'Picardy third', 'Baroque'],
+  mozart_notte: ['Opera buffa', 'Italian', 'Recitative', 'Aria', 'Sonata form'],
+  mozart_ensemble: ['Opera buffa', 'Italian', 'Polyphonic', 'Chromatic'],
+  mozart_la_ci: ['Opera buffa', 'Italian', 'Aria', 'Bel canto', 'Major'],
+  beethoven_5_mvt1: ['Sonata form', 'Exposition', '1st theme', '2nd theme', 'Development', 'Recapitulation', 'Coda', 'Minor'],
+  beethoven_5_mvt2: ['Movement', 'Major', 'Andante'],
+  beethoven_5_mvt3: ['Movement', 'Minor', 'Allegro'],
+  schubert_gretchen: ['Lied', 'Through-composed', 'German', 'Minor', 'Ritardando'],
+  schubert_erlking: ['Lied', 'Through-composed', 'German', 'Minor', 'Major', 'Allegro'],
+  mendelssohn_violin: ['Virtuoso', 'Vibrato', 'Legato', 'Cadenza', 'Romantic', 'Minor'],
+  chopin_waltz: ['Virtuoso', 'Arpeggio', 'Triple', 'Major', 'Romantic'],
+  berlioz_sym_mvt1: ['Program music', 'Idée fixe', 'Romantic', 'Sonata form'],
+  berlioz_sym_mvt4: ['Program music', 'Idée fixe', 'Romantic'],
+  berlioz_sym_mvt5: ['Program music', 'Idée fixe', 'Romantic', 'Chromatic'],
+  brahms_clarinet: ['Romantic', 'Minor', 'Legato', 'Vibrato'],
+};
 
 // ==================== STATE ====================
 const USER_KEY = 'music_quiz_user';
@@ -744,14 +785,14 @@ function playFull(id, onTimeUpdate) {
   if (!file) return;
   const audio = new Audio(file.url);
   currentAudio = audio;
-  audio.play();
-  if (onTimeUpdate) {
-    audio.addEventListener('loadedmetadata', () => {
+  audio.addEventListener('loadedmetadata', () => {
+    audio.play();
+    if (onTimeUpdate) {
       progressInterval = setInterval(() => {
         onTimeUpdate(audio.currentTime, audio.duration, audio.currentTime);
       }, 200);
-    });
-  }
+    }
+  });
   audio.addEventListener('ended', () => { if (progressInterval) clearInterval(progressInterval); });
   return audio;
 }
@@ -893,16 +934,11 @@ function playQuizClip() {
   document.getElementById('quiz-status').textContent = 'Listening... What piece is this?';
   if (!quizState.answered) document.getElementById('answer-area').style.display = '';
 
-  // Always pick a new random start
   const file = audioFiles[id];
-  const tempAudio = new Audio(file.url);
-  tempAudio.addEventListener('loadedmetadata', () => {
-    const duration = 60;
-    const maxStart = Math.max(0, tempAudio.duration - duration);
-    const start = Math.random() * maxStart;
-    quizState.clipStart = start;
-    tempAudio.pause();
+  const duration = 60;
 
+  function doPlay(start) {
+    quizState.clipStart = start;
     playClip(id, start, duration,
       (elapsed, total) => {
         document.getElementById('quiz-progress').style.width = (elapsed / total * 100) + '%';
@@ -914,7 +950,19 @@ function playQuizClip() {
         document.getElementById('quiz-stop').style.display = 'none';
       }
     );
-  });
+  }
+
+  if (quizState.clipStart !== undefined) {
+    doPlay(quizState.clipStart);
+  } else {
+    const tempAudio = new Audio(file.url);
+    tempAudio.addEventListener('loadedmetadata', () => {
+      const maxStart = Math.max(0, tempAudio.duration - duration);
+      const start = Math.random() * maxStart;
+      tempAudio.pause();
+      doPlay(start);
+    });
+  }
 }
 
 // ==================== RENDERING ====================
@@ -1005,6 +1053,7 @@ function renderStudyList() {
       <div class="detail-value">${p.artistTheme || ''}</div>
       <div class="detail-label">How to Identify</div>
       <div class="detail-desc">${p.desc || ''}</div>
+      ${(PIECE_TERMS[p.id] || []).length ? `<div class="detail-label">Key Terms</div><div class="term-pills">${(PIECE_TERMS[p.id] || []).map(t => `<span class="term-pill">${t}</span>`).join('')}</div>` : ''}
     `;
 
     li.onclick = () => {
@@ -1020,6 +1069,9 @@ function renderStudyList() {
         document.body.classList.add('player-open');
         document.getElementById('study-now-playing').textContent = (p.composer && p.composer !== 'N/A' ? p.composer + ': ' : '') + p.name;
         document.getElementById('study-player').dataset.id = p.id;
+      } else {
+        document.getElementById('study-player').style.display = 'none';
+        document.body.classList.remove('player-open');
       }
       stopAudio();
     };
@@ -1238,6 +1290,8 @@ document.getElementById('switch-user').addEventListener('click', () => {
   stopAudio();
   sessionStats = { right: 0, close: 0, wrong: 0 };
   quizState = { currentPieceId: null, answered: false, graded: false };
+  document.getElementById('study-player').style.display = 'none';
+  document.body.classList.remove('player-open');
   document.getElementById('login-overlay').style.display = 'flex';
   document.getElementById('user-bar').style.display = 'none';
   document.getElementById('login-email').value = '';
