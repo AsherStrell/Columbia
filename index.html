@@ -140,6 +140,17 @@ h2 { margin-bottom: 16px; }
 .instrument-list { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
 .instrument-chip { background: #0f3460; padding: 8px 18px; border-radius: 8px; font-size: 14px; color: #e0e0e0; font-weight: 600; }
 
+/* ID flowchart */
+.id-tree { margin: 16px 0; }
+.id-branch { margin-bottom: 20px; }
+.id-branch h3 { font-size: 17px; margin-bottom: 10px; }
+.id-branch h3 .singing { color: #4ecca3; }
+.id-branch h3 .no-singing { color: #e94560; }
+.id-row { display: flex; align-items: start; gap: 12px; padding: 10px 14px; margin: 4px 0; border-radius: 8px; background: #16213e; }
+.id-row .id-key { min-width: 200px; font-weight: 600; color: #e94560; font-size: 14px; flex-shrink: 0; }
+.id-row .id-pieces { font-size: 14px; color: #ccc; flex: 1; }
+.id-row .id-tip { font-size: 12px; color: #8899aa; margin-top: 4px; font-style: italic; }
+
 /* Fixed study player bar */
 .study-player-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #16213e; border-top: 2px solid #0f3460; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 50; box-shadow: 0 -4px 16px rgba(0,0,0,0.4); }
 .study-player-bar .btn-play, .study-player-bar .btn-replay, .study-player-bar .btn-stop { padding: 8px 18px; font-size: 14px; }
@@ -292,9 +303,78 @@ body.player-open #study-view { padding-bottom: 80px; }
 
   <!-- TERMS VIEW -->
   <div id="terms-view" class="view">
-    <h2>Terms & Instruments</h2>
+    <h2>Identification Guide</h2>
+
+    <div class="id-tree">
+      <div class="id-branch">
+        <h3><span class="singing">Has Singing</span></h3>
+
+        <div class="id-row">
+          <div class="id-key">Monophony (Greek)</div>
+          <div class="id-pieces">Kyrie<div class="id-tip">Listen for the first word "Kyrie"</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Monophony (Latin)</div>
+          <div class="id-pieces">Introit / Alleluia<div class="id-tip">Listen for the first word "Alleluia" — this one is in monophony</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Polyphony (Latin)</div>
+          <div class="id-pieces">Leoninus' Alleluia / Perotinus' Viderunt Omnes<div class="id-tip">Listen for "Alleluia" — this one is in polyphony (multiple voices)</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Homophony (Latin + English)</div>
+          <div class="id-pieces">Byrd / Dowland<div class="id-tip">Byrd has no instruments. Dowland might include lute or harpsichord. If in English with orchestra, it's Handel.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Lute + Harpsichord (Italian)</div>
+          <div class="id-pieces">Monteverdi<div class="id-tip">Solo singer with minimal accompaniment. Between singing and speaking.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Orchestra (English)</div>
+          <div class="id-pieces">Handel<div class="id-tip">Byrd has no instruments. Dowland might include lute or harpsichord. If in English and there is orchestra, it is Handel.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Orchestra (Italian)</div>
+          <div class="id-pieces">Mozart<div class="id-tip">Full orchestra, dynamics shifting, voices shaking. Don Giovanni.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Only Piano (German)</div>
+          <div class="id-pieces">Schubert<div class="id-tip">German art songs (Lieder). Fast piano + solo voice. Dramatic and emotional.</div></div>
+        </div>
+      </div>
+
+      <div class="id-branch">
+        <h3><span class="no-singing">No Singing</span></h3>
+
+        <div class="id-row">
+          <div class="id-key">Solo Harpsichord</div>
+          <div class="id-pieces">Bach<div class="id-tip">Sounds piano-like but plucking. Fugue — instruments chasing each other. Constant energy.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Full Orchestra / Symphony</div>
+          <div class="id-pieces">Beethoven<div class="id-tip">Famous da-da-da-daaa (Mvt 1). Dramatic shifts between movements.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Violin with Orchestra</div>
+          <div class="id-pieces">Mendelssohn<div class="id-tip">Crying violin opening. Very sad. Violin-specific concerto.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Only Piano</div>
+          <div class="id-pieces">Chopin<div class="id-tip">Waltz. Goes really fast at times. Very major key and happy.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Horn-centric Orchestra</div>
+          <div class="id-pieces">Berlioz<div class="id-tip">Not songs you would hum to. Creepy (Mvt 5 = slasher film vibes). Program music.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Clarinet with Strings</div>
+          <div class="id-pieces">Brahms<div class="id-tip">Chamber music. Clarinet quintet.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:30px;">Instruments to Identify</h2>
     <div class="terms-section">
-      <h3>Instrument Identification</h3>
       <div class="instrument-list">
         <span class="instrument-chip">Bassoon</span>
         <span class="instrument-chip">Oboe</span>
@@ -303,6 +383,8 @@ body.player-open #study-view { padding-bottom: 80px; }
         <span class="instrument-chip">Cello</span>
       </div>
     </div>
+
+    <h2 style="margin-top:30px;">Terms by Class</h2>
     <div class="terms-section">
       <h3>Class 2: Basics</h3>
       <div class="terms-grid">
