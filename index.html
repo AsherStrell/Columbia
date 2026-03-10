@@ -118,6 +118,14 @@ h2 { margin-bottom: 16px; }
 
 /* Audio time display */
 .time-display { color: #8899aa; font-size: 14px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+
+/* Fixed study player bar */
+.study-player-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #16213e; border-top: 2px solid #0f3460; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 50; box-shadow: 0 -4px 16px rgba(0,0,0,0.4); }
+.study-player-bar .btn-play, .study-player-bar .btn-replay, .study-player-bar .btn-stop { padding: 8px 18px; font-size: 14px; }
+
+/* Add bottom padding to container when player is visible */
+body.player-open .container { padding-bottom: 80px; }
+body.player-open #study-view { padding-bottom: 80px; }
 </style>
 </head>
 <body>
@@ -201,15 +209,6 @@ h2 { margin-bottom: 16px; }
       <p>No songs loaded. <a id="go-to-library2">Go to Library</a> first.</p>
     </div>
     <ul class="study-list" id="study-list"></ul>
-    <div id="study-player" style="display:none;margin-top:20px;text-align:center;">
-      <div id="study-now-playing" style="color:#e94560;font-size:16px;margin-bottom:10px;"></div>
-      <div class="player-controls">
-        <button class="btn-play" id="study-play">&#9654; Play Full</button>
-        <button class="btn-replay" id="study-random">&#127922; Random 60s</button>
-        <button class="btn-stop" id="study-stop">&#9632; Stop</button>
-      </div>
-      <div class="time-display" id="study-time"></div>
-    </div>
   </div>
 
   <!-- STATS VIEW -->
@@ -223,6 +222,16 @@ h2 { margin-bottom: 16px; }
       <tbody id="stats-tbody"></tbody>
     </table>
     <button class="reset-btn" id="reset-stats">Reset All Stats</button>
+  </div>
+</div>
+
+<div id="study-player" class="study-player-bar" style="display:none;">
+  <div id="study-now-playing" style="color:#e94560;font-size:15px;font-weight:600;"></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button class="btn-play" id="study-play">&#9654; Play Full</button>
+    <button class="btn-replay" id="study-random">&#127922; Random 60s</button>
+    <button class="btn-stop" id="study-stop">&#9632; Stop</button>
+    <span class="time-display" id="study-time" style="margin:0;"></span>
   </div>
 </div>
 
@@ -264,7 +273,38 @@ const PIECES = [
 // ==================== STATE ====================
 const STATE_KEY = 'music_quiz_stats';
 const ASSIGN_KEY = 'music_quiz_assignments';
-let audioFiles = {}; // id -> { url, fileName }
+let audioFiles = {
+  introit: { url: 'music_files/Introit.mp3', fileName: 'Introit.mp3' },
+  kyrie: { url: 'music_files/Kyrie.mp3', fileName: 'Kyrie.mp3' },
+  alleluia: { url: 'music_files/Alleluia.mp3', fileName: 'Alleluia.mp3' },
+  leoninus_alleluia: { url: 'music_files/Leoninus Alleluia.mp3', fileName: 'Leoninus Alleluia.mp3' },
+  viderunt_omnes: { url: 'music_files/Perotinus Viderunt Omnes.mp3', fileName: 'Perotinus Viderunt Omnes.mp3' },
+  byrd_agnus_dei: { url: 'music_files/Byrd Agnus Dei.mp3', fileName: 'Byrd Agnus Dei.mp3' },
+  byrd_sweet_merry: { url: 'music_files/Byrd This Sweet and Merry Month.mp3', fileName: 'Byrd This Sweet and Merry Month.mp3' },
+  dowland_can_she: { url: 'music_files/Dowland Can She Excuse.mp3', fileName: 'Dowland Can She Excuse.mp3' },
+  dowland_arrangements: { url: 'music_files/Dowland arrangements.mp3', fileName: 'Dowland arrangements.mp3' },
+  monteverdi_ritornello: { url: 'music_files/Monteverdi Ritornello Prologue.mp3', fileName: 'Monteverdi Ritornello Prologue.mp3' },
+  monteverdi_lament: { url: 'music_files/Monteverdi Orfeo Lament.mp3', fileName: 'Monteverdi Orfeo Lament.mp3' },
+  handel_shepherds: { url: 'music_files/Handel There were shepherds.mp3', fileName: 'Handel There were shepherds.mp3' },
+  handel_every_valley: { url: 'music_files/Handel Evry Valley.mp3', fileName: 'Handel Evry Valley.mp3' },
+  handel_hallelujah: { url: 'music_files/Handel Hallelujah chorus.mp3', fileName: 'Handel Hallelujah chorus.mp3' },
+  handel_he_trusted: { url: 'music_files/Handel He trusted in God.mp3', fileName: 'Handel He trusted in God.mp3' },
+  bach_prelude_fugue: { url: 'music_files/Bach Prelude and Fugue in C Minor.mp3', fileName: 'Bach Prelude and Fugue in C Minor.mp3' },
+  mozart_notte: { url: 'music_files/Mozart Notte e giorno.mp3', fileName: 'Mozart Notte e giorno.mp3' },
+  mozart_ensemble: { url: 'music_files/Mozart Ensemble Don Giovanni.mp3', fileName: 'Mozart Ensemble Don Giovanni.mp3' },
+  mozart_la_ci: { url: 'music_files/Mozart La ci darem.mp3', fileName: 'Mozart La ci darem.mp3' },
+  beethoven_5_mvt1: { url: 'music_files/Beethoven Symphony 5 Mvt 1.mp3', fileName: 'Beethoven Symphony 5 Mvt 1.mp3' },
+  beethoven_5_mvt2: { url: 'music_files/Beethoven Symphony 5 Mvt 2.mp3', fileName: 'Beethoven Symphony 5 Mvt 2.mp3' },
+  beethoven_5_mvt3: { url: 'music_files/Beethoven Symphony 5 Mvt 3.mp3', fileName: 'Beethoven Symphony 5 Mvt 3.mp3' },
+  schubert_gretchen: { url: 'music_files/Schubert Gretchen.mp3', fileName: 'Schubert Gretchen.mp3' },
+  schubert_erlking: { url: 'music_files/Schubert Erlking.mp3', fileName: 'Schubert Erlking.mp3' },
+  mendelssohn_violin: { url: 'music_files/Mendelssohn Violin Concerto.mp3', fileName: 'Mendelssohn Violin Concerto.mp3' },
+  chopin_waltz: { url: 'music_files/Chopin Waltz Op 34.mp3', fileName: 'Chopin Waltz Op 34.mp3' },
+  berlioz_sym_mvt1: { url: 'music_files/Berlioz Fantastic Symphony Mvt 1.mp3', fileName: 'Berlioz Fantastic Symphony Mvt 1.mp3' },
+  berlioz_sym_mvt4: { url: 'music_files/Berlioz Fantastic Symphony Mvt 4.mp3', fileName: 'Berlioz Fantastic Symphony Mvt 4.mp3' },
+  berlioz_sym_mvt5: { url: 'music_files/Berlioz Fantastic Symphony Mvt 5.mp3', fileName: 'Berlioz Fantastic Symphony Mvt 5.mp3' },
+  brahms_clarinet: { url: 'music_files/Brahms Clarinet Quintet.mp3', fileName: 'Brahms Clarinet Quintet.mp3' },
+};
 let currentAudio = null;
 let clipTimeout = null;
 let quizState = { currentPieceId: null, answered: false, graded: false };
@@ -594,7 +634,8 @@ function renderStudyList() {
     li.onclick = () => {
       document.querySelectorAll('.study-item').forEach(el => el.classList.remove('playing'));
       li.classList.add('playing');
-      document.getElementById('study-player').style.display = '';
+      document.getElementById('study-player').style.display = 'flex';
+      document.body.classList.add('player-open');
       document.getElementById('study-now-playing').textContent = (p.composer ? p.composer + ': ' : '') + p.name;
       document.getElementById('study-player').dataset.id = p.id;
       stopAudio();
@@ -662,6 +703,10 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.add('active');
     document.getElementById(btn.dataset.view + '-view').classList.add('active');
     stopAudio();
+    if (btn.dataset.view !== 'study') {
+      document.getElementById('study-player').style.display = 'none';
+      document.body.classList.remove('player-open');
+    }
     if (btn.dataset.view === 'stats') renderStats();
     if (btn.dataset.view === 'quiz') {
       const loaded = getLoadedPieces();
