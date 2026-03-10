@@ -119,8 +119,8 @@ h2 { margin-bottom: 16px; }
 /* Audio time display */
 .time-display { color: #8899aa; font-size: 14px; margin-top: 8px; font-variant-numeric: tabular-nums; }
 
-/* Study detail panel */
-.study-detail { background: #16213e; border-radius: 12px; padding: 20px; margin-top: 16px; display: none; }
+/* Study detail panel (inline dropdown) */
+.study-detail { background: #1e2d50; border-radius: 0 0 8px 8px; padding: 16px; margin: -4px 0 4px; display: none; border-top: 2px solid #e94560; }
 .study-detail.active { display: block; }
 .study-detail .detail-label { font-size: 12px; color: #666; text-transform: uppercase; margin-top: 10px; }
 .study-detail .detail-value { font-size: 14px; color: #ccc; margin: 2px 0 8px; }
@@ -281,30 +281,6 @@ body.player-open #study-view { padding-bottom: 80px; }
       <p>No songs loaded. <a id="go-to-library2">Go to Library</a> first.</p>
     </div>
     <ul class="study-list" id="study-list"></ul>
-    <div class="study-detail" id="study-detail">
-      <div style="display:flex;justify-content:space-between;align-items:start;">
-        <div>
-          <div class="detail-label">Composer</div>
-          <div class="detail-value" id="detail-composer"></div>
-        </div>
-        <div>
-          <div class="detail-label">Period</div>
-          <div class="detail-value" id="detail-period"></div>
-        </div>
-        <div>
-          <div class="detail-label">Work</div>
-          <div class="detail-value" id="detail-play"></div>
-        </div>
-        <div>
-          <div class="detail-label">File</div>
-          <div class="detail-value" id="detail-file"></div>
-        </div>
-      </div>
-      <div class="detail-label">Artist Theme</div>
-      <div class="detail-value" id="detail-artist-theme"></div>
-      <div class="detail-label">How to Identify</div>
-      <div class="detail-desc" id="detail-desc"></div>
-    </div>
   </div>
 
   <!-- TERMS VIEW -->
@@ -1015,24 +991,41 @@ function renderStudyList() {
     li.dataset.id = p.id;
     const file = audioFiles[p.id];
     li.innerHTML = `<span class="name">${p.composer && p.composer !== 'N/A' ? p.composer + ': ' : ''}${p.name}</span><span class="file-tag">${file ? file.fileName : ''}</span>`;
+
+    // Create inline detail dropdown for this piece
+    const detail = document.createElement('li');
+    detail.className = 'study-detail';
+    detail.innerHTML = `
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <div><div class="detail-label">Composer</div><div class="detail-value">${p.composer || 'Unknown'}</div></div>
+        <div><div class="detail-label">Period</div><div class="detail-value">${p.period || ''}</div></div>
+        <div><div class="detail-label">Work</div><div class="detail-value">${p.play || 'N/A'}</div></div>
+        <div><div class="detail-label">File</div><div class="detail-value">${file ? file.fileName : 'Not loaded'}</div></div>
+      </div>
+      <div class="detail-label">Artist Theme</div>
+      <div class="detail-value">${p.artistTheme || ''}</div>
+      <div class="detail-label">How to Identify</div>
+      <div class="detail-desc">${p.desc || ''}</div>
+    `;
+
     li.onclick = () => {
-      document.querySelectorAll('.study-item').forEach(el => el.classList.remove('playing'));
-      li.classList.add('playing');
-      document.getElementById('study-player').style.display = 'flex';
-      document.body.classList.add('player-open');
-      document.getElementById('study-now-playing').textContent = (p.composer && p.composer !== 'N/A' ? p.composer + ': ' : '') + p.name;
-      document.getElementById('study-player').dataset.id = p.id;
-      // Show detail panel
-      document.getElementById('study-detail').classList.add('active');
-      document.getElementById('detail-composer').textContent = p.composer || 'Unknown';
-      document.getElementById('detail-period').textContent = p.period || '';
-      document.getElementById('detail-play').textContent = p.play || 'N/A';
-      document.getElementById('detail-file').textContent = file ? file.fileName : 'Not loaded';
-      document.getElementById('detail-artist-theme').textContent = p.artistTheme || '';
-      document.getElementById('detail-desc').textContent = p.desc || '';
+      const wasOpen = detail.classList.contains('active');
+      // Close any open dropdown
+      document.querySelectorAll('.study-detail.active').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.study-item.playing').forEach(el => el.classList.remove('playing'));
+
+      if (!wasOpen) {
+        li.classList.add('playing');
+        detail.classList.add('active');
+        document.getElementById('study-player').style.display = 'flex';
+        document.body.classList.add('player-open');
+        document.getElementById('study-now-playing').textContent = (p.composer && p.composer !== 'N/A' ? p.composer + ': ' : '') + p.name;
+        document.getElementById('study-player').dataset.id = p.id;
+      }
       stopAudio();
     };
     list.appendChild(li);
+    list.appendChild(detail);
   });
 }
 
