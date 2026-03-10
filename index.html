@@ -304,12 +304,12 @@ body.player-open #study-view { padding-bottom: 80px; }
           <div class="id-pieces">Leoninus' Alleluia / Perotinus' Viderunt Omnes<div class="id-tip">Listen for "Alleluia" — this one is in polyphony (multiple voices)</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Homophony (Latin + English)</div>
-          <div class="id-pieces">Byrd / Dowland<div class="id-tip">Byrd has no instruments. Dowland might include lute or harpsichord. If in English with orchestra, it's Handel.</div></div>
+          <div class="id-key">Polyphony (Latin + English)</div>
+          <div class="id-pieces">Byrd / Dowland<div class="id-tip">Byrd = imitative polyphony, no instruments, angelic. Dowland = lute song with voice. If in English with orchestra, it's Handel.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Lute + Harpsichord (Italian)</div>
-          <div class="id-pieces">Monteverdi<div class="id-tip">Solo singer with minimal accompaniment. Between singing and speaking.</div></div>
+          <div class="id-key">Solo Voice + Continuo (Italian)</div>
+          <div class="id-pieces">Monteverdi<div class="id-tip">Solo singer with harpsichord/organ continuo. Between singing and speaking. Small ensemble, not full orchestra.</div></div>
         </div>
         <div class="id-row">
           <div class="id-key">Orchestra (English)</div>
@@ -320,8 +320,8 @@ body.player-open #study-view { padding-bottom: 80px; }
           <div class="id-pieces">Mozart<div class="id-tip">Full orchestra, dynamics shifting, voices shaking. Don Giovanni.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Only Piano (German)</div>
-          <div class="id-pieces">Schubert<div class="id-tip">German art songs (Lieder). Fast piano + solo voice. Dramatic and emotional.</div></div>
+          <div class="id-key">Voice + Piano (German)</div>
+          <div class="id-pieces">Schubert<div class="id-tip">German art songs (Lieder). Only instrument is piano but there IS singing. Dramatic and emotional.</div></div>
         </div>
       </div>
 
@@ -514,14 +514,13 @@ body.player-open #study-view { padding-bottom: 80px; }
 
 <script>
 // ==================== SONG DATA ====================
-const PERIOD_ORDER = ['Medieval', 'Renaissance', 'Baroque', 'Classical', 'Classical/Romantic', 'Romantic'];
+const PERIOD_ORDER = ['Medieval', 'Renaissance', 'Baroque', 'Classical', 'Romantic'];
 const PERIOD_INFO = {
   'Medieval': { date: '1/29', reading: 'Kelly pp. 41-53', label: 'Medieval (Gregorian Chant & Early Polyphony)' },
   'Renaissance': { date: '2/3', reading: 'Kelly pp. 65-79', label: 'Renaissance (Byrd & Dowland)' },
   'Baroque': { date: '2/5, 2/10, 2/12', reading: 'Kelly pp. 91-160', label: 'Baroque (Monteverdi, Handel, Bach)' },
-  'Classical': { date: '2/17', reading: 'Kelly pp. 192-204', label: 'Classical (Mozart)' },
-  'Classical/Romantic': { date: '2/19', reading: 'Kelly pp. 222-30', label: 'Classical/Romantic (Beethoven)' },
-  'Romantic': { date: '2/24, 2/26, 3/3, 3/5', reading: 'Kelly pp. 235-308', label: 'Romantic (Schubert, Mendelssohn, Chopin, Berlioz, Brahms)' },
+  'Classical': { date: '2/17, 2/19, 2/24', reading: 'Kelly pp. 192-251', label: 'Classical (Mozart, Beethoven, Schubert)' },
+  'Romantic': { date: '2/26, 3/3, 3/5', reading: 'Kelly pp. 268-308', label: 'Romantic (Mendelssohn, Chopin, Berlioz, Brahms)' },
 };
 const PIECES = [
   { id: 'introit', name: 'Introit', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
@@ -546,7 +545,7 @@ const PIECES = [
     desc: 'Sounds like chirping birds — polyphony pops off. In English. Short notes. Sounds like something to drink ale to.',
     artistTheme: 'Byrd: no instruments. Imitative polyphony.' },
   { id: 'dowland_can_she', name: 'Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Madrigal (secular). Either a teen boy or deep voice woman singing. In English with lute. Renaissance quest vibes. Arrangements have similar melody in different ways.',
+    desc: 'Lute song/ayre (secular). Either a teen boy or deep voice woman singing. In English with lute. Renaissance quest vibes. Arrangements have similar melody in different ways.',
     artistTheme: 'Dowland: uses instruments, in English, sounds like quest music. Plucking instrument (lute).' },
   { id: 'dowland_arrangements', name: 'Arrangements of Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance', play: '', classDate: '2/3',
     desc: 'Instrument picking strings, no singing. Variations include polyphony with singing and instruments.',
@@ -555,7 +554,7 @@ const PIECES = [
     desc: 'Harpsichord heavy with lady opera. Between singing and speaking. Violin also. Not in English.',
     artistTheme: "Monteverdi's Orfeo: solo singer with minimal accompaniment. Between singing and speaking. Not in English." },
   { id: 'monteverdi_lament', name: "Orfeo's Lament", composer: 'Monteverdi', period: 'Baroque', play: "L'Orfeo", classDate: '2/5',
-    desc: 'Also known as "Tu Se Morta" / "Possente Spirito". One instrument and organ. Solo voice with minimal accompaniment.',
+    desc: 'Also known as "Tu se morta." One instrument and organ. Solo voice with minimal accompaniment.',
     artistTheme: "Monteverdi's Orfeo: solo singer with minimal accompaniment. Between singing and speaking. Not in English." },
   { id: 'handel_shepherds', name: 'There were shepherds (Messiah)', composer: 'Handel', period: 'Baroque', play: 'The Messiah', classDate: '2/10',
     desc: 'Woman singing. Oscillating strings + harpsichord. In English.',
@@ -581,19 +580,19 @@ const PIECES = [
   { id: 'mozart_la_ci', name: 'Là ci darem la mano (Don Giovanni)', composer: 'Mozart', period: 'Classical', play: 'Don Giovanni', classDate: '2/17',
     desc: 'Orchestra (Italian). Waltzing male + woman duet. Soft clarinet in background. Sounds warm like a fireplace.',
     artistTheme: "Mozart's Don Giovanni: voices shaking, dynamics shifting, full orchestra. People singing over each other." },
-  { id: 'beethoven_5_mvt1', name: 'Symphony No. 5 in C Minor - Mvt. 1', composer: 'Beethoven', period: 'Classical/Romantic', play: 'Symphony No. 5', classDate: '2/19',
+  { id: 'beethoven_5_mvt1', name: 'Symphony No. 5 in C Minor - Mvt. 1', composer: 'Beethoven', period: 'Classical', play: 'Symphony No. 5', classDate: '2/19',
     desc: 'NO SINGING. Full orchestra. Famous du du du dun. Fast moving and stressful. Then trumpets like king coming.',
     artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
-  { id: 'beethoven_5_mvt2', name: 'Symphony No. 5 in C Minor - Mvt. 2', composer: 'Beethoven', period: 'Classical/Romantic', play: 'Symphony No. 5', classDate: '2/19',
+  { id: 'beethoven_5_mvt2', name: 'Symphony No. 5 in C Minor - Mvt. 2', composer: 'Beethoven', period: 'Classical', play: 'Symphony No. 5', classDate: '2/19',
     desc: 'NO SINGING. Full orchestra. Slower strings + orchestra. Trumpet marching band. Normal old school classical.',
     artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
-  { id: 'beethoven_5_mvt3', name: 'Symphony No. 5 in C Minor - Mvt. 3', composer: 'Beethoven', period: 'Classical/Romantic', play: 'Symphony No. 5', classDate: '2/19',
+  { id: 'beethoven_5_mvt3', name: 'Symphony No. 5 in C Minor - Mvt. 3', composer: 'Beethoven', period: 'Classical', play: 'Symphony No. 5', classDate: '2/19',
     desc: 'NO SINGING. Full orchestra. Mysterious + grand — something is leading up to something. Fast horn transition. Very fast music in the middle.',
     artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
-  { id: 'schubert_gretchen', name: 'Gretchen at the Spinning Wheel', composer: 'Schubert', period: 'Romantic', play: '', classDate: '2/24',
+  { id: 'schubert_gretchen', name: 'Gretchen at the Spinning Wheel', composer: 'Schubert', period: 'Classical', play: '', classDate: '2/24',
     desc: 'Only piano (German). Woman singing with anxious fast piano. Sounds like suffering at a spinning wheel. German.',
     artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
-  { id: 'schubert_erlking', name: 'The Erlking', composer: 'Schubert', period: 'Romantic', play: '', classDate: '2/24',
+  { id: 'schubert_erlking', name: 'The Erlking', composer: 'Schubert', period: 'Classical', play: '', classDate: '2/24',
     desc: 'Only piano (German). Male with super fast piano. Very creepy, like on a road trip. Major-minor shift. German.',
     artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
   { id: 'mendelssohn_violin', name: 'Violin Concerto in E Minor - Mvt. 1', composer: 'Mendelssohn', period: 'Romantic', play: '', classDate: '2/26',
