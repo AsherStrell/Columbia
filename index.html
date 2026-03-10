@@ -126,7 +126,10 @@ h2 { margin-bottom: 16px; }
 .study-detail .detail-value { font-size: 14px; color: #ccc; margin: 2px 0 8px; }
 .study-detail .detail-desc { font-size: 14px; color: #aab; line-height: 1.5; margin-top: 8px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 3px solid #e94560; }
 .term-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.term-pill { background: #0f3460; color: #8dc8e8; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 500; border: 1px solid rgba(141,200,232,0.2); }
+.term-pill { background: #0f3460; color: #8dc8e8; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 500; border: 1px solid rgba(141,200,232,0.2); position: relative; cursor: default; }
+.term-pill .term-tip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #0a0f1e; color: #ddd; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 400; white-space: normal; width: max-content; max-width: 240px; line-height: 1.4; border: 1px solid #0f3460; box-shadow: 0 4px 16px rgba(0,0,0,0.5); z-index: 60; pointer-events: none; }
+.term-pill .term-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #0f3460; }
+.term-pill:hover .term-tip { display: block; }
 .study-item .file-tag { font-size: 11px; color: #555; margin-left: auto; }
 .delanie-mode .study-item .name { filter: blur(6px); transition: filter 0.2s; }
 .delanie-mode .study-item .name:hover { filter: none; }
@@ -144,7 +147,10 @@ h2 { margin-bottom: 16px; }
 .terms-section { margin-bottom: 24px; }
 .terms-section h3 { color: #e94560; margin-bottom: 8px; font-size: 16px; }
 .terms-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-.term-chip { background: #16213e; padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #ccc; border: 1px solid #0f3460; }
+.term-chip { background: #16213e; padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #ccc; border: 1px solid #0f3460; position: relative; cursor: default; }
+.term-chip .term-tip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #0a0f1e; color: #ddd; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 400; white-space: normal; width: max-content; max-width: 260px; line-height: 1.4; border: 1px solid #0f3460; box-shadow: 0 4px 16px rgba(0,0,0,0.5); z-index: 60; pointer-events: none; }
+.term-chip .term-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #0f3460; }
+.term-chip:hover .term-tip { display: block; }
 .instrument-list { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
 .instrument-chip { background: #0f3460; padding: 8px 18px; border-radius: 8px; font-size: 14px; color: #e0e0e0; font-weight: 600; }
 
@@ -373,100 +379,7 @@ body.player-open #study-view { padding-bottom: 80px; }
     </div>
 
     <h2 style="margin-top:30px;">Terms by Class</h2>
-    <div class="terms-section">
-      <h3>Class 2: Basics</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Pitch</span><span class="term-chip">Meter</span><span class="term-chip">Melody</span>
-        <span class="term-chip">Scale</span><span class="term-chip">Octave</span><span class="term-chip">Interval</span>
-        <span class="term-chip">Duple</span><span class="term-chip">Triple</span>
-        <span class="term-chip">Tempo</span><span class="term-chip">Adagio</span><span class="term-chip">Andante</span><span class="term-chip">Lento</span>
-        <span class="term-chip">Moderato</span><span class="term-chip">Allegro</span><span class="term-chip">Presto</span>
-        <span class="term-chip">Accelerando</span><span class="term-chip">Ritardando</span><span class="term-chip">Rallentando</span>
-        <span class="term-chip">Sharp</span><span class="term-chip">Flat</span>
-        <span class="term-chip">Thirds (happy)</span><span class="term-chip">Fourths (warmth)</span><span class="term-chip">Fifths</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 3: Harmony</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Harmony</span><span class="term-chip">Third</span><span class="term-chip">Triad (key)</span><span class="term-chip">Half step</span>
-        <span class="term-chip">Tonality</span><span class="term-chip">Tonic</span><span class="term-chip">Subdominant</span><span class="term-chip">Dominant</span>
-        <span class="term-chip">Major</span><span class="term-chip">Minor</span>
-        <span class="term-chip">Forte</span><span class="term-chip">Piano</span><span class="term-chip">Crescendo</span><span class="term-chip">Decrescendo</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 4: Texture</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Monophonic</span><span class="term-chip">Polyphonic</span>
-        <span class="term-chip">Strands</span><span class="term-chip">Sustained note</span><span class="term-chip">Organum</span><span class="term-chip">Discant</span><span class="term-chip">Imitative</span>
-        <span class="term-chip">Melisma</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 5: Voices & Forms</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Soprano</span><span class="term-chip">Alto</span><span class="term-chip">Tenor</span><span class="term-chip">Bass</span>
-        <span class="term-chip">Imitative polyphony</span><span class="term-chip">Homophony</span>
-        <span class="term-chip">Motet</span><span class="term-chip">Madrigal</span>
-        <span class="term-chip">Word painting</span><span class="term-chip">Arrangement</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 6: Early Baroque</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Ritornello</span><span class="term-chip">Strophic variation</span>
-        <span class="term-chip">Basso continuo</span><span class="term-chip">Glottal strokes</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 7: Baroque Forms</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Recitative</span><span class="term-chip">Aria</span><span class="term-chip">Cadenza</span>
-        <span class="term-chip">Fugue</span><span class="term-chip">Exposition</span><span class="term-chip">Subject</span><span class="term-chip">Episode</span>
-        <span class="term-chip">Baroque</span><span class="term-chip">Pizzicato</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 8: Opera</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Libretto</span><span class="term-chip">Opera seria</span><span class="term-chip">Opera buffa</span>
-        <span class="term-chip">Bel canto</span><span class="term-chip">Chromatic</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 9: Bach</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Counter subject</span><span class="term-chip">Pedal point</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 10: Classical Form</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Movement</span><span class="term-chip">Sonata form</span>
-        <span class="term-chip">Exposition</span><span class="term-chip">1st theme</span><span class="term-chip">2nd theme</span>
-        <span class="term-chip">Transitions</span><span class="term-chip">Closing</span>
-        <span class="term-chip">Development</span><span class="term-chip">Recapitulation</span><span class="term-chip">Coda</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 11: Romantic Song</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Lied</span><span class="term-chip">Through-composed</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 12: Virtuosity</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Arpeggio</span><span class="term-chip">Virtuoso</span><span class="term-chip">Vibrato</span>
-        <span class="term-chip">Legato</span><span class="term-chip">Harmonics</span><span class="term-chip">Trilling</span><span class="term-chip">Double stop</span>
-      </div>
-    </div>
-    <div class="terms-section">
-      <h3>Class 13: Romantic Orchestra</h3>
-      <div class="terms-grid">
-        <span class="term-chip">Program music</span><span class="term-chip">Romantic</span><span class="term-chip">Idée fixe</span>
-      </div>
+    <div id="terms-by-class"></div>
     </div>
 
     <h2 style="margin-top:30px;">Quick Review Q&A</h2>
@@ -655,6 +568,142 @@ const PIECE_TERMS = {
   berlioz_sym_mvt5: ['Program music', 'Idée fixe', 'Romantic', 'Chromatic'],
   brahms_clarinet: ['Romantic', 'Minor', 'Legato', 'Vibrato'],
 };
+
+// ==================== TERM DEFINITIONS ====================
+const TERM_DEFS = {
+  'Pitch': 'How high or low a note sounds.',
+  'Meter': 'Recurring pattern of strong and weak beats.',
+  'Melody': 'A sequence of pitches forming a recognizable musical line.',
+  'Scale': 'An ordered series of pitches ascending or descending by step.',
+  'Octave': 'Interval between one pitch and the next with double its frequency.',
+  'Interval': 'The distance in pitch between two notes.',
+  'Duple': 'Meter grouped in twos (strong-weak, like a march).',
+  'Triple': 'Meter grouped in threes (strong-weak-weak, like a waltz).',
+  'Tempo': 'The speed at which music is performed.',
+  'Adagio': 'Slow tempo, slower than andante.',
+  'Andante': 'Moderate walking-pace tempo.',
+  'Lento': 'Very slow tempo.',
+  'Moderato': 'Moderate tempo, between andante and allegro.',
+  'Allegro': 'Fast, lively tempo.',
+  'Presto': 'Very fast tempo, faster than allegro.',
+  'Accelerando': 'Gradually speeding up the tempo.',
+  'Ritardando': 'Gradually slowing down the tempo.',
+  'Rallentando': 'Gradually slowing down (synonymous with ritardando).',
+  'Sharp': 'Raises a pitch by one half step.',
+  'Flat': 'Lowers a pitch by one half step.',
+  'Thirds (happy)': 'Intervals of a third sound warm and cheerful.',
+  'Fourths (warmth)': 'Perfect fourths sound open and warm, common in hymns.',
+  'Fifths': 'Perfect fifths sound open and hollow.',
+  'Harmony': 'Two or more pitches sounding simultaneously.',
+  'Third': 'An interval spanning three scale degrees (e.g., C to E).',
+  'Triad (key)': 'A three-note chord built by stacking two thirds.',
+  'Half step': 'The smallest interval in Western music (e.g., E to F).',
+  'Tonality': 'Organization of music around a central pitch or tonic.',
+  'Tonic': 'The home pitch or chord of a key (scale degree 1).',
+  'Subdominant': 'The fourth scale degree or its chord, pulls toward dominant.',
+  'Dominant': 'The fifth scale degree or its chord, creates tension toward tonic.',
+  'Major': 'Key or scale with a bright, happy quality; has a major third.',
+  'Minor': 'Key or scale with a dark, sad quality; has a minor third.',
+  'Forte': 'Loud dynamic level.',
+  'Piano': 'Soft dynamic level (also the instrument).',
+  'Crescendo': 'Gradually getting louder.',
+  'Decrescendo': 'Gradually getting softer.',
+  'Monophonic': 'Single melodic line with no accompaniment or harmony.',
+  'Polyphonic': 'Multiple independent melodic lines sounding simultaneously.',
+  'Strands': 'Individual melodic lines within a polyphonic texture.',
+  'Sustained note': 'A long held pitch beneath moving voices, as in organum.',
+  'Organum': 'Early medieval polyphony adding voices above a plainchant melody.',
+  'Discant': 'Style of organum where all voices move in measured rhythm.',
+  'Imitative': 'Voices enter successively repeating the same melodic idea.',
+  'Melisma': 'Many notes sung on a single syllable of text.',
+  'Soprano': 'Highest standard vocal range, typically a woman\u2019s voice.',
+  'Alto': 'Lower female (or countertenor) vocal range, below soprano.',
+  'Tenor': 'Higher male vocal range, below alto.',
+  'Bass': 'Lowest male vocal range.',
+  'Imitative polyphony': 'Voices enter in turn with the same melody.',
+  'Homophony': 'One main melody supported by chordal accompaniment.',
+  'Motet': 'Sacred polyphonic choral work, usually in Latin, unaccompanied.',
+  'Madrigal': 'Secular polyphonic vocal piece with expressive text setting.',
+  'Word painting': 'Musical sounds directly illustrate the meaning of lyrics.',
+  'Arrangement': 'Adaptation of a composition for different instruments or voices.',
+  'Ritornello': 'Recurring orchestral passage alternating with solo sections.',
+  'Strophic variation': 'Same melody repeated each verse with varied accompaniment.',
+  'Basso continuo': 'Baroque bass line plus improvised chordal harmony above it.',
+  'Glottal strokes': 'Sharp vocal attacks by abruptly opening the vocal folds.',
+  'Recitative': 'Speech-like singing that advances the plot in opera.',
+  'Aria': 'Lyrical solo song in opera showcasing vocal skill.',
+  'Cadenza': 'Virtuosic unaccompanied solo passage, usually near a movement\u2019s end.',
+  'Fugue': 'Polyphonic composition built on a subject imitated across all voices.',
+  'Exposition': 'Opening section where themes or fugue subject are introduced.',
+  'Subject': 'The main melodic theme of a fugue.',
+  'Episode': 'Passage in a fugue between subject entries, often using sequences.',
+  'Baroque': 'Musical era (~1600\u20131750) with ornate style and basso continuo.',
+  'Pizzicato': 'Plucking strings with fingers instead of using the bow.',
+  'Libretto': 'The text or script of an opera.',
+  'Opera seria': 'Serious opera with noble characters and heroic plots.',
+  'Opera buffa': 'Comic opera with everyday characters and humorous plots.',
+  'Bel canto': 'Italian vocal style emphasizing beautiful tone and agility.',
+  'Chromatic': 'Using notes outside the key\u2019s scale, moving by half steps.',
+  'Counter subject': 'Secondary melody that accompanies the main fugue subject.',
+  'Pedal point': 'A sustained note held while harmonies change above it.',
+  'Movement': 'A self-contained section within a larger musical work.',
+  'Sonata form': 'Three-part structure: exposition, development, recapitulation.',
+  '1st theme': 'The opening main melody presented in the exposition.',
+  '2nd theme': 'A contrasting melody in a new key during the exposition.',
+  'Transitions': 'Passages connecting themes, often modulating between keys.',
+  'Closing': 'Final passage of the exposition that confirms the new key.',
+  'Development': 'Middle section that fragments and transforms exposition themes.',
+  'Recapitulation': 'Return of exposition material with both themes in the home key.',
+  'Coda': 'A concluding passage added after the main structure ends.',
+  'Lied': 'German art song for voice and piano, often setting poetry.',
+  'Through-composed': 'Song with new music for each stanza, no repeated sections.',
+  'Arpeggio': 'Notes of a chord played one after another.',
+  'Virtuoso': 'A performer with exceptional technical skill.',
+  'Vibrato': 'Rapid, slight pitch variation that adds warmth to a note.',
+  'Legato': 'Smooth, connected playing with no gaps between notes.',
+  'Harmonics': 'High, bell-like tones produced by lightly touching a string.',
+  'Trilling': 'Rapid alternation between two adjacent notes.',
+  'Double stop': 'Playing two strings simultaneously on a bowed instrument.',
+  'Program music': 'Instrumental music that tells a story or depicts ideas.',
+  'Romantic': '19th-century era emphasizing emotion and expressive freedom.',
+  'Id\u00e9e fixe': 'A recurring theme representing a fixed obsession (Berlioz).',
+  'Picardy third': 'Ending a minor-key piece with a major chord.',
+  'Latin': 'Language of Catholic liturgical music (Mass, chant).',
+  'Greek': 'Language of the Kyrie; its theory shaped Western music.',
+  'English': 'Language used in Handel\u2019s Messiah and Byrd\u2019s madrigals.',
+  'Italian': 'Language dominant in opera; source of most tempo markings.',
+  'German': 'Language of Lieder (Schubert) and Wagner\u2019s operas.',
+  'Instrumental': 'Music performed by instruments alone, no vocal parts.',
+  'Lute': 'Plucked string instrument with rounded back, popular in Renaissance.',
+};
+
+const CLASS_TERMS = [
+  { title: 'Class 2: Basics', terms: ['Pitch','Meter','Melody','Scale','Octave','Interval','Duple','Triple','Tempo','Adagio','Andante','Lento','Moderato','Allegro','Presto','Accelerando','Ritardando','Rallentando','Sharp','Flat','Thirds (happy)','Fourths (warmth)','Fifths'] },
+  { title: 'Class 3: Harmony', terms: ['Harmony','Third','Triad (key)','Half step','Tonality','Tonic','Subdominant','Dominant','Major','Minor','Forte','Piano','Crescendo','Decrescendo'] },
+  { title: 'Class 4: Texture', terms: ['Monophonic','Polyphonic','Strands','Sustained note','Organum','Discant','Imitative','Melisma'] },
+  { title: 'Class 5: Voices & Forms', terms: ['Soprano','Alto','Tenor','Bass','Imitative polyphony','Homophony','Motet','Madrigal','Word painting','Arrangement'] },
+  { title: 'Class 6: Early Baroque', terms: ['Ritornello','Strophic variation','Basso continuo','Glottal strokes'] },
+  { title: 'Class 7: Baroque Forms', terms: ['Recitative','Aria','Cadenza','Fugue','Exposition','Subject','Episode','Baroque','Pizzicato'] },
+  { title: 'Class 8: Opera', terms: ['Libretto','Opera seria','Opera buffa','Bel canto','Chromatic'] },
+  { title: 'Class 9: Bach', terms: ['Counter subject','Pedal point'] },
+  { title: 'Class 10: Classical Form', terms: ['Movement','Sonata form','Exposition','1st theme','2nd theme','Transitions','Closing','Development','Recapitulation','Coda'] },
+  { title: 'Class 11: Romantic Song', terms: ['Lied','Through-composed'] },
+  { title: 'Class 12: Virtuosity', terms: ['Arpeggio','Virtuoso','Vibrato','Legato','Harmonics','Trilling','Double stop'] },
+  { title: 'Class 13: Romantic Orchestra', terms: ['Program music','Romantic','Id\u00e9e fixe'] },
+];
+
+function termPillHTML(term, cls) {
+  const def = TERM_DEFS[term] || '';
+  const tipHTML = def ? `<span class="term-tip">${def}</span>` : '';
+  return `<span class="${cls || 'term-chip'}">${term}${tipHTML}</span>`;
+}
+
+function renderTermsPage() {
+  const container = document.getElementById('terms-by-class');
+  container.innerHTML = CLASS_TERMS.map(group =>
+    `<div class="terms-section"><h3>${group.title}</h3><div class="terms-grid">${group.terms.map(t => termPillHTML(t, 'term-chip')).join('')}</div></div>`
+  ).join('');
+}
 
 // ==================== STATE ====================
 const USER_KEY = 'music_quiz_user';
@@ -1053,7 +1102,7 @@ function renderStudyList() {
       <div class="detail-value">${p.artistTheme || ''}</div>
       <div class="detail-label">How to Identify</div>
       <div class="detail-desc">${p.desc || ''}</div>
-      ${(PIECE_TERMS[p.id] || []).length ? `<div class="detail-label">Key Terms</div><div class="term-pills">${(PIECE_TERMS[p.id] || []).map(t => `<span class="term-pill">${t}</span>`).join('')}</div>` : ''}
+      ${(PIECE_TERMS[p.id] || []).length ? `<div class="detail-label">Key Terms</div><div class="term-pills">${(PIECE_TERMS[p.id] || []).map(t => termPillHTML(t, 'term-pill')).join('')}</div>` : ''}
     `;
 
     li.onclick = () => {
@@ -1298,6 +1347,7 @@ document.getElementById('switch-user').addEventListener('click', () => {
 });
 
 // ==================== INIT ====================
+renderTermsPage();
 if (currentUser) { initApp(); }
 </script>
 </body>
