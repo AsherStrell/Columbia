@@ -1,0 +1,167 @@
+[
+  { "pieceId": "puccini_mi_chiamano", "outputFile": "Puccini Mi Chiamano Mimi.mp3",
+    "ytUrl": null,
+    "searchFallback": "Anna Netrebko Mi chiamano Mimi La boheme Puccini" },
+
+  { "pieceId": "bizet_habanera", "outputFile": "Bizet Habanera Carmen.mp3",
+    "ytUrl": null,
+    "searchFallback": "Maria Callas Habanera Carmen Bizet" },
+
+  { "pieceId": "still_troubled_island", "outputFile": "Still Troubled Island.mp3",
+    "ytUrl": null,
+    "searchFallback": "Quanda Johnson Troubled Island William Grant Still" },
+
+  { "pieceId": "wagner_walkure_prelude", "outputFile": "Wagner Walkure Prelude Storm.mp3",
+    "ytUrl": null,
+    "searchFallback": "Wagner Die Walkure Act 1 Prelude Storm Solti" },
+
+  { "pieceId": "wagner_walkure_meeting", "outputFile": "Wagner Walkure Meeting.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=IszX_oJoJSY",
+    "searchFallback": "Wagner Die Walkure Siegmund Sieglinde meet scene",
+    "trim": { "start": "0:04:30", "end": "0:11:00" } },
+
+  { "pieceId": "wagner_walkure_spring", "outputFile": "Wagner Walkure Spring Song.mp3",
+    "ytUrl": null,
+    "searchFallback": "Wagner Walkure Wintersturme wichen dem Wonnemond Spring Song" },
+
+  { "pieceId": "wagner_walkure_sword", "outputFile": "Wagner Walkure Sword.mp3",
+    "ytUrl": null,
+    "searchFallback": "Wagner Walkure Notung Siegmund sword" },
+
+  { "pieceId": "wagner_walkure_ride", "outputFile": "Wagner Walkure Ride of the Valkyries.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=V92OBNsQgxU",
+    "searchFallback": "Wagner Ride of the Valkyries" },
+
+  { "pieceId": "wagner_tristan_liebestod", "outputFile": "Wagner Tristan Liebestod.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=RSx4F6r46FY",
+    "searchFallback": "Wagner Tristan und Isolde Liebestod aria" },
+
+  { "pieceId": "dvorak_new_world_2", "outputFile": "Dvorak New World Symphony Mvt 2.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=mFRwTpRL3R4",
+    "searchFallback": "Dvorak New World Symphony Largo second movement",
+    "trim": { "start": "0:09:00", "end": "0:21:00" } },
+
+  { "pieceId": "debussy_faun", "outputFile": "Debussy Prelude Afternoon of a Faun.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=9_7loz-HWUM",
+    "searchFallback": "Debussy Prelude to the Afternoon of a Faun" },
+
+  { "pieceId": "stravinsky_rite_intro", "outputFile": "Stravinsky Rite of Spring Introduction.mp3",
+    "ytUrl": null,
+    "searchFallback": "Stravinsky Rite of Spring Introduction bassoon opening" },
+
+  { "pieceId": "stravinsky_rite_girls", "outputFile": "Stravinsky Rite of Spring Girls Dance.mp3",
+    "ytUrl": null,
+    "searchFallback": "Stravinsky Rite of Spring Augurs of Spring Dance of the Young Girls" },
+
+  { "pieceId": "stravinsky_rite_spring", "outputFile": "Stravinsky Rite of Spring Spring Rounds.mp3",
+    "ytUrl": null,
+    "searchFallback": "Stravinsky Rite of Spring Spring Rounds Rondes printanieres" },
+
+  { "pieceId": "stravinsky_rite_procession", "outputFile": "Stravinsky Rite of Spring Procession.mp3",
+    "ytUrl": null,
+    "searchFallback": "Stravinsky Rite of Spring Procession of the Sage Oldest Wisest" },
+
+  { "pieceId": "stravinsky_rite_glorif", "outputFile": "Stravinsky Rite of Spring Glorification.mp3",
+    "ytUrl": null,
+    "searchFallback": "Stravinsky Rite of Spring Glorification of the Chosen One" },
+
+  { "pieceId": "stravinsky_rite_sacrif", "outputFile": "Stravinsky Rite of Spring Sacrificial Dance.mp3",
+    "ytUrl": null,
+    "searchFallback": "Stravinsky Rite of Spring Sacrificial Dance final" },
+
+  { "pieceId": "schoenberg_variations", "outputFile": "Schoenberg Variations for Orchestra Op 31.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=g7wefv98lvo",
+    "searchFallback": "Schoenberg Variations for Orchestra Op 31 Karajan" },
+
+  { "pieceId": "berg_wozzeck_act3_sc2", "outputFile": "Berg Wozzeck Act 3 Scene 2.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=702knK1mop0",
+    "searchFallback": "Berg Wozzeck Act 3 Scene 2 Invention on a Note pond" },
+
+  { "pieceId": "berg_wozzeck_act3_sc4", "outputFile": "Berg Wozzeck Act 3 Scene 4.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=sWMMhfY3ulY",
+    "searchFallback": "Berg Wozzeck Act 3 Scene 4 Invention on a Chord drowning" },
+
+  { "pieceId": "berg_wozzeck_act3_sc5", "outputFile": "Berg Wozzeck Act 3 Scene 5.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=m9jEzG3xT9M",
+    "searchFallback": "Berg Wozzeck Act 3 Scene 5 Invention on a Regular Rhythm children" },
+
+  { "pieceId": "copland_appalachian_doppio", "outputFile": "Copland Appalachian Spring Doppio.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=fvdtfFqHTf4",
+    "searchFallback": "Copland Appalachian Spring Doppio movimento" },
+
+  { "pieceId": "copland_appalachian_moderato", "outputFile": "Copland Appalachian Spring Moderato.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=UH2BeSYFVa0",
+    "searchFallback": "Copland Appalachian Spring Moderato Simple Gifts" },
+
+  { "pieceId": "bernstein_wss_prologue", "outputFile": "Bernstein West Side Story Prologue.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=8YGLiwQle9E",
+    "searchFallback": "Bernstein West Side Story Prologue" },
+
+  { "pieceId": "bernstein_wss_jet_song", "outputFile": "Bernstein West Side Story Jet Song.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=IAcoSqgQzXg",
+    "searchFallback": "Bernstein West Side Story Jet Song" },
+
+  { "pieceId": "bernstein_wss_boy_have_love", "outputFile": "Bernstein West Side Story Boy Like That I Have a Love.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=pv7o8klA0zk",
+    "searchFallback": "Bernstein West Side Story Boy Like That I Have a Love" },
+
+  { "pieceId": "armstrong_cornet_chop_suey", "outputFile": "Armstrong Cornet Chop Suey.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=_2fhRwAFA2Y",
+    "searchFallback": "Louis Armstrong Cornet Chop Suey 1926" },
+
+  { "pieceId": "ellington_mood_indigo", "outputFile": "Ellington Mood Indigo.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=0cJw9GPga0U",
+    "searchFallback": "Duke Ellington Mood Indigo" },
+
+  { "pieceId": "hawkins_body_and_soul", "outputFile": "Hawkins Body and Soul.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=0Q7J4PgrRsY",
+    "searchFallback": "Coleman Hawkins Body and Soul 1939" },
+
+  { "pieceId": "parker_cherokee", "outputFile": "Parker Cherokee.mp3",
+    "ytUrl": null,
+    "searchFallback": "Charlie Parker Cherokee bebop" },
+
+  { "pieceId": "coltrane_summertime", "outputFile": "Coltrane Summertime.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=NEftw9o1joo",
+    "searchFallback": "John Coltrane Summertime" },
+
+  { "pieceId": "joplin_maple_leaf_rag", "outputFile": "Joplin Maple Leaf Rag.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=pMAtL7n_-rc",
+    "searchFallback": "Scott Joplin Maple Leaf Rag piano roll" },
+
+  { "pieceId": "joplin_treemonisha_dinah", "outputFile": "Joplin Treemonisha Aunt Dinah.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=j1MJayGZXFs",
+    "searchFallback": "Joplin Treemonisha Aunt Dinah Has Blowed the Horn" },
+
+  { "pieceId": "gershwin_my_mans_gone", "outputFile": "Gershwin My Mans Gone Now.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=gkk6VhDEKrQ",
+    "searchFallback": "Gershwin My Man's Gone Now Porgy and Bess" },
+
+  { "pieceId": "gershwin_bess_you_is", "outputFile": "Gershwin Bess You Is My Woman Now.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=prRezeoDFSA",
+    "searchFallback": "Gershwin Bess You Is My Woman Now Porgy and Bess" },
+
+  { "pieceId": "gershwin_rhapsody", "outputFile": "Gershwin Rhapsody in Blue.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=bcPCKnMHG68",
+    "searchFallback": "Gershwin Rhapsody in Blue clarinet glissando" },
+
+  { "pieceId": "cook_swing_along", "outputFile": "Cook Swing Along.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=hzNmR2_Ks30",
+    "searchFallback": "Will Marion Cook Swing Along rare recording" },
+
+  { "pieceId": "dawson_negro_folk_symphony", "outputFile": "Dawson Negro Folk Symphony.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=wPhDb3XnXHs",
+    "searchFallback": "William Dawson Negro Folk Symphony" },
+
+  { "pieceId": "loesser_warm_all_over", "outputFile": "Loesser Warm All Over.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=5WkP7xY7Zm4",
+    "searchFallback": "Frank Loesser Warm All Over Most Happy Fella" },
+
+  { "pieceId": "sondheim_how_i_saved", "outputFile": "Sondheim How I Saved Roosevelt.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=x1k-6Djpitk",
+    "searchFallback": "Sondheim Assassins How I Saved Roosevelt" },
+
+  { "pieceId": "jerry_likes_my_corn", "outputFile": "Jerry Likes My Corn.mp3",
+    "ytUrl": "https://www.youtube.com/watch?v=liEvmpMY4sA",
+    "searchFallback": "Jerry Likes My Corn musical" }
+]

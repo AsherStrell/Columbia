@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Music Humanities Quiz</title>
+<title>Music Humanities Final Quiz</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; min-height: 100vh; }
@@ -151,8 +151,25 @@ h2 { margin-bottom: 16px; }
 .term-chip .term-tip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #0a0f1e; color: #ddd; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 400; white-space: normal; width: max-content; max-width: 260px; line-height: 1.4; border: 1px solid #0f3460; box-shadow: 0 4px 16px rgba(0,0,0,0.5); z-index: 60; pointer-events: none; }
 .term-chip .term-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #0f3460; }
 .term-chip:hover .term-tip { display: block; }
-.instrument-list { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
-.instrument-chip { background: #0f3460; padding: 8px 18px; border-radius: 8px; font-size: 14px; color: #e0e0e0; font-weight: 600; }
+.term-pill.starred, .term-chip.starred { background: rgba(240,165,0,0.14); color: #ffd980; border-color: rgba(240,165,0,0.55); }
+.term-pill.starred::before, .term-chip.starred::before { content: '★ '; color: #f0a500; margin-right: 2px; }
+
+/* Term Quiz */
+.tq-controls { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.tq-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tq-label { color: #8899aa; font-size: 13px; min-width: 70px; }
+.tq-filter-btn, .tq-dir-btn { padding: 6px 14px; background: #16213e; border: 1px solid #0f3460; color: #ccc; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.15s; }
+.tq-filter-btn:hover, .tq-dir-btn:hover { border-color: #e94560; }
+.tq-filter-btn.active, .tq-dir-btn.active { background: #e94560; color: #fff; border-color: #e94560; }
+.term-card { background: #16213e; border-radius: 12px; padding: 32px 24px; margin-top: 20px; text-align: center; min-height: 220px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+.tq-prompt-label, .tq-answer-label { font-size: 11px; color: #8899aa; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; font-weight: 600; }
+.tq-prompt { font-size: 26px; color: #e94560; font-weight: 700; margin-bottom: 24px; line-height: 1.3; }
+.tq-prompt.starred::before { content: '★ '; color: #f0a500; }
+.tq-prompt.long { font-size: 18px; font-weight: 500; color: #e0e0e0; line-height: 1.5; text-align: left; }
+.tq-answer-area { margin: 20px 0 16px; padding: 16px; background: rgba(0,0,0,0.25); border-left: 3px solid #4ecca3; border-radius: 8px; text-align: left; }
+.tq-answer { font-size: 15px; color: #e0e0e0; line-height: 1.55; }
+.tq-answer.term { font-size: 22px; color: #4ecca3; font-weight: 700; text-align: center; }
+.tq-actions { margin-top: 16px; }
 
 /* ID flowchart */
 .id-tree { margin: 16px 0; }
@@ -194,7 +211,7 @@ body.player-open #study-view { padding-bottom: 80px; }
 
 <div class="login-overlay" id="login-overlay">
   <div class="login-box">
-    <h1>Music Humanities</h1>
+    <h1>Music Hum Final</h1>
     <p>Enter your email to track your progress</p>
     <input type="email" id="login-email" placeholder="you@columbia.edu" autocomplete="email">
     <button id="login-btn">Start Studying</button>
@@ -208,7 +225,8 @@ body.player-open #study-view { padding-bottom: 80px; }
 
 <nav>
   <button class="nav-btn active" data-view="library">Library</button>
-  <button class="nav-btn" data-view="quiz">Quiz</button>
+  <button class="nav-btn" data-view="quiz">Audio Quiz</button>
+  <button class="nav-btn" data-view="term-quiz">Term Quiz</button>
   <button class="nav-btn" data-view="study">Study</button>
   <button class="nav-btn" data-view="terms">Terms</button>
   <button class="nav-btn" data-view="stats">Stats</button>
@@ -278,6 +296,52 @@ body.player-open #study-view { padding-bottom: 80px; }
     </div>
   </div>
 
+  <!-- TERM QUIZ VIEW -->
+  <div id="term-quiz-view" class="view">
+    <h2>Term Quiz</h2>
+    <div class="tq-controls">
+      <div class="tq-row">
+        <span class="tq-label">Pool:</span>
+        <button class="tq-filter-btn active" data-tq-filter="all">All Terms</button>
+        <button class="tq-filter-btn" data-tq-filter="starred">★ Critical 7</button>
+        <button class="tq-filter-btn" data-tq-filter="composer">Composer ↔ Pieces</button>
+      </div>
+      <div class="tq-row">
+        <span class="tq-label">Direction:</span>
+        <button class="tq-dir-btn active" data-tq-dir="t2d">Term → Definition</button>
+        <button class="tq-dir-btn" data-tq-dir="d2t">Definition → Term</button>
+      </div>
+    </div>
+    <div class="session-banner">
+      <span>Session: <span class="count" id="tq-correct">0</span> right, <span class="count" id="tq-close">0</span> close, <span class="count" id="tq-wrong">0</span> wrong</span>
+      <span id="tq-accuracy"></span>
+    </div>
+    <div class="term-card" id="term-card">
+      <div class="tq-prompt-label" id="tq-prompt-label">Term:</div>
+      <div class="tq-prompt" id="tq-prompt">Loading…</div>
+      <div class="tq-answer-area" id="tq-answer-area" style="display:none;">
+        <div class="tq-answer-label" id="tq-answer-label">Definition:</div>
+        <div class="tq-answer" id="tq-answer"></div>
+      </div>
+      <div id="tq-show-action" class="tq-actions">
+        <button class="btn-play" id="tq-show">Show Answer</button>
+        <button class="btn-replay" id="tq-skip" style="margin-left:6px;">Skip ↦</button>
+      </div>
+      <div id="tq-grade-action" class="tq-actions" style="display:none;">
+        <div style="font-size:13px;color:#aab;margin-bottom:10px;">How did you do?</div>
+        <div class="grade-buttons">
+          <button class="btn-right" data-tq-grade="right">Right</button>
+          <button class="btn-close" data-tq-grade="close">Close</button>
+          <button class="btn-wrong" data-tq-grade="wrong">Wrong</button>
+        </div>
+      </div>
+      <div id="tq-next-action" class="tq-actions" style="display:none;">
+        <button class="next-btn" id="tq-next">Next →</button>
+      </div>
+    </div>
+    <p style="color:#666;font-size:12px;margin-top:12px;text-align:center;">Tip: ★ Critical 7 is the cram-deck. Composer ↔ Pieces tests "Who wrote X?"–style cards.</p>
+  </div>
+
   <!-- STUDY VIEW -->
   <div id="study-view" class="view">
     <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -300,111 +364,161 @@ body.player-open #study-view { padding-bottom: 80px; }
         <h3><span class="singing">Has Singing</span></h3>
 
         <div class="id-row">
-          <div class="id-key">Monophony (Greek)</div>
-          <div class="id-pieces">Kyrie<div class="id-tip">Listen for the first word "Kyrie"</div></div>
+          <div class="id-key">Italian opera, lush soprano</div>
+          <div class="id-pieces">Puccini — Mi Chiamano Mimì (La bohème)<div class="id-tip">Lyrical soaring soprano, late-Romantic harmony, single voice with orchestra. Anna Netrebko.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Monophony (Latin)</div>
-          <div class="id-pieces">Introit / Alleluia<div class="id-tip">Listen for the first word "Alleluia" — this one is in monophony</div></div>
+          <div class="id-key">Spanish-flavored mezzo, habanera rhythm</div>
+          <div class="id-pieces">Bizet — Habanera (Carmen)<div class="id-tip">DUM dum-DUM dum habanera rhythm, descending chromatic line. Maria Callas.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Polyphony (Latin)</div>
-          <div class="id-pieces">Leoninus' Alleluia / Perotinus' Viderunt Omnes<div class="id-tip">Listen for "Alleluia" — this one is in polyphony (multiple voices)</div></div>
+          <div class="id-key">English-language opera, AfAm-inflected</div>
+          <div class="id-pieces">William Grant Still — Troubled Island<div class="id-tip">Sung in English, Caribbean / blues color. About Haiti overthrowing the French.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Polyphony, No Instruments (Latin/English)</div>
-          <div class="id-pieces">Byrd<div class="id-tip">Imitative polyphony, voices only, angelic. Agnus Dei = Latin. Sweet and Merry = English.</div></div>
+          <div class="id-key">German opera, leitmotifs, huge orchestra</div>
+          <div class="id-pieces">Wagner — Walküre / Tristan<div class="id-tip">Brass-heavy, recurring leitmotifs, never-ending melody, no closed numbers. Gesamtkunstwerk. Tristan Chord on Liebestod.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Lute Song / Ayre (English)</div>
-          <div class="id-pieces">Dowland<div class="id-tip">Voice + lute (plucking). Quest music vibes. Arrangements = instrumental only.</div></div>
+          <div class="id-key">Atonal opera, speech-song</div>
+          <div class="id-pieces">Berg — Wozzeck (Act III)<div class="id-tip">Sprechstimme, dissonant, claustrophobic — "weird singing over weird harmony." Sc.2 = pond/murder; Sc.4 = drowning; Sc.5 = children playing.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Solo Voice + Continuo (Italian)</div>
-          <div class="id-pieces">Monteverdi<div class="id-tip">Solo singer with harpsichord/organ continuo. Between singing and speaking. Small ensemble, not full orchestra.</div></div>
+          <div class="id-key">1950s American musical, snappy syncopation</div>
+          <div class="id-pieces">Bernstein — West Side Story<div class="id-tip">Tritone on "Maria," general dissonance, jazz-flavored orchestration, gang chase music.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Orchestra (English)</div>
-          <div class="id-pieces">Handel<div class="id-tip">Byrd has no instruments. Dowland might include lute or harpsichord. If in English and there is orchestra, it is Handel.</div></div>
+          <div class="id-key">Jazz vocal, blue notes, swing feel</div>
+          <div class="id-pieces">Gershwin — Porgy &amp; Bess (My Man's Gone Now / Bess You Is My Woman Now)<div class="id-tip">Lowered 3rds/5ths/7ths, swung rhythms. Bess "you is" sung in blue notes.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Orchestra (Italian)</div>
-          <div class="id-pieces">Mozart<div class="id-tip">Full orchestra, dynamics shifting, voices shaking. Don Giovanni.</div></div>
-        </div>
-        <div class="id-row">
-          <div class="id-key">Voice + Piano (German)</div>
-          <div class="id-pieces">Schubert<div class="id-tip">German art songs (Lieder). Only instrument is piano but there IS singing. Dramatic and emotional.</div></div>
+          <div class="id-key">Ragtime opera, syncopated piano under voice</div>
+          <div class="id-pieces">Joplin — Treemonisha (Aunt Dinah)<div class="id-tip">Vocal music with ragtime piano underneath. Aunt Dinah opens with horn — sounds cult-ish.</div></div>
         </div>
       </div>
 
       <div class="id-branch">
-        <h3><span class="no-singing">No Singing</span></h3>
+        <h3><span class="no-singing">Orchestral, No Singing</span></h3>
 
         <div class="id-row">
-          <div class="id-key">Solo Harpsichord</div>
-          <div class="id-pieces">Bach<div class="id-tip">Sounds piano-like but plucking. Fugue — instruments chasing each other. Constant energy.</div></div>
+          <div class="id-key">Pentatonic, English-horn solo, "Goin' Home"</div>
+          <div class="id-pieces">Dvořák — New World Symphony, Largo<div class="id-tip">Five-note pentatonic theme, slow, melancholy. Native-American–inspired.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Full Orchestra / Symphony</div>
-          <div class="id-pieces">Beethoven<div class="id-tip">Famous da-da-da-daaa (Mvt 1). Dramatic shifts between movements.</div></div>
+          <div class="id-key">Dreamy flute, tritones, no clear meter</div>
+          <div class="id-pieces">Debussy — Prelude to the Afternoon of a Faun<div class="id-tip">Opens with hazy flute solo, Impressionist, sudden major↔minor shifts.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Violin with Orchestra</div>
-          <div class="id-pieces">Mendelssohn<div class="id-tip">Crying violin opening. Very sad. Violin-specific concerto.</div></div>
+          <div class="id-key">Brass fanfare, galloping triplets</div>
+          <div class="id-pieces">Wagner — Ride of the Valkyries<div class="id-tip">French horns, triplet rhythm, heroic. Ice-Age-squirrel iconic theme.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Only Piano</div>
-          <div class="id-pieces">Chopin<div class="id-tip">Waltz. Goes really fast at times. Very major key and happy.</div></div>
+          <div class="id-key">Pounding ostinato, savage rhythm</div>
+          <div class="id-pieces">Stravinsky — The Rite of Spring<div class="id-tip">Repeated dissonant chords (ostinato), polytonality (two keys at once), irregular meter, percussive.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Horn-centric Orchestra</div>
-          <div class="id-pieces">Berlioz<div class="id-tip">Not songs you would hum to. Creepy (Mvt 5 = slasher film vibes). Program music.</div></div>
+          <div class="id-key">Atonal, fragmented, sparse</div>
+          <div class="id-pieces">Schoenberg — Variations for Orchestra Op. 31<div class="id-tip">No tonal center, 12-tone row, Second Viennese School. Creepy with no singing.</div></div>
         </div>
         <div class="id-row">
-          <div class="id-key">Clarinet with Strings</div>
-          <div class="id-pieces">Brahms<div class="id-tip">Chamber music. Clarinet quintet.</div></div>
+          <div class="id-key">Open intervals, "Simple Gifts" wholesome</div>
+          <div class="id-pieces">Copland — Appalachian Spring<div class="id-tip">Open 4ths/5ths, plains/cowboy America. Doppio = upbeat striding; Moderato = whole symphony together.</div></div>
         </div>
       </div>
-    </div>
 
-    <h2 style="margin-top:30px;">Instruments to Identify</h2>
-    <div class="terms-section">
-      <div class="instrument-list">
-        <span class="instrument-chip">Bassoon</span>
-        <span class="instrument-chip">Oboe</span>
-        <span class="instrument-chip">Trumpet</span>
-        <span class="instrument-chip">French Horn</span>
-        <span class="instrument-chip">Cello</span>
+      <div class="id-branch">
+        <h3><span class="no-singing">Jazz / Solo Piano</span></h3>
+
+        <div class="id-row">
+          <div class="id-key">Old-timey cornet, upbeat, "Mickey Mouse music"</div>
+          <div class="id-pieces">Louis Armstrong — Cornet Chop Suey<div class="id-tip">Sounds like a saxophone in old music, super upbeat, improvised. Inventor of jazz.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Smooth dance band, muted brass, train-track vibe</div>
+          <div class="id-pieces">Duke Ellington — Mood Indigo<div class="id-tip">Slow swing, lush horns (clarinet, muted trumpet, banjo), trippy night-time feel.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Romantic tenor sax ballad</div>
+          <div class="id-pieces">Coleman Hawkins — Body and Soul<div class="id-tip">Opens with beautiful piano, then long sax improvisation. Romantic-movie opener vibe.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Fast bebop sax, lightning runs</div>
+          <div class="id-pieces">Charlie Parker — Cherokee<div class="id-tip">Bebop — fast complex jazz of the 1940s. Notable saxophone solo.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Modal sax improvisation</div>
+          <div class="id-pieces">Coltrane — Summertime<div class="id-tip">Saxophone dominates. Black-tie-event-background-music feel.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Stride piano, syncopated right hand</div>
+          <div class="id-pieces">Joplin — Maple Leaf Rag<div class="id-tip">Top and bottom go against each other (syncopation). Made his career; turns ragtime into art.</div></div>
+        </div>
+        <div class="id-row">
+          <div class="id-key">Famous clarinet glissando opening</div>
+          <div class="id-pieces">Gershwin — Rhapsody in Blue<div class="id-tip">Ragtime + blues fusion. Piano + jazz band.</div></div>
+        </div>
       </div>
     </div>
 
     <h2 style="margin-top:30px;">Terms by Class</h2>
     <div id="terms-by-class"></div>
-    </div>
 
     <h2 style="margin-top:30px;">Quick Review Q&A</h2>
     <div class="terms-section" id="qa-section">
-      <div class="id-row"><div class="id-key">Gregorian Chant songs?</div><div class="id-pieces">Introit, Kyrie, Alleluia</div></div>
-      <div class="id-row"><div class="id-key">Medieval Polyphony songs?</div><div class="id-pieces">Leoninus' Alleluia (organum), Perotinus' Viderunt Omnes (organum)</div></div>
-      <div class="id-row"><div class="id-key">Renaissance artists?</div><div class="id-pieces">Byrd, Dowland</div></div>
-      <div class="id-row"><div class="id-key">Byrd's songs?</div><div class="id-pieces">Agnus Dei, This Sweet and Merry Month of May</div></div>
-      <div class="id-row"><div class="id-key">Dowland's songs?</div><div class="id-pieces">Can She Excuse My Wrongs, Arrangements of same</div></div>
-      <div class="id-row"><div class="id-key">Baroque artists?</div><div class="id-pieces">Monteverdi, Handel, Bach</div></div>
-      <div class="id-row"><div class="id-key">Monteverdi's play?</div><div class="id-pieces">L'Orfeo</div></div>
-      <div class="id-row"><div class="id-key">Monteverdi's songs?</div><div class="id-pieces">Opening Ritornello and Prologue, Orfeo's Lament</div></div>
-      <div class="id-row"><div class="id-key">Handel's play?</div><div class="id-pieces">Messiah</div></div>
-      <div class="id-row"><div class="id-key">Handel's songs?</div><div class="id-pieces">There were shepherds, Ev'ry Valley, Hallelujah chorus, He trusted in God</div></div>
-      <div class="id-row"><div class="id-key">Bach's songs?</div><div class="id-pieces">Prelude and Fugue in C Minor</div></div>
-      <div class="id-row"><div class="id-key">Classical artists?</div><div class="id-pieces">Mozart, Beethoven, Schubert</div></div>
-      <div class="id-row"><div class="id-key">Mozart's play?</div><div class="id-pieces">Don Giovanni</div></div>
-      <div class="id-row"><div class="id-key">Mozart's songs?</div><div class="id-pieces">Notte e giorno faticar, Ensemble Act I Scene I, Là ci darem la mano</div></div>
-      <div class="id-row"><div class="id-key">Beethoven's songs?</div><div class="id-pieces">Symphony No. 5 in C Minor (Mvts 1-3)</div></div>
-      <div class="id-row"><div class="id-key">Schubert's songs?</div><div class="id-pieces">Gretchen at the Spinning Wheel, The Erlking</div></div>
-      <div class="id-row"><div class="id-key">Romantic artists?</div><div class="id-pieces">Mendelssohn, Chopin, Berlioz, Brahms</div></div>
-      <div class="id-row"><div class="id-key">Mendelssohn's songs?</div><div class="id-pieces">Violin Concerto in E Minor</div></div>
-      <div class="id-row"><div class="id-key">Chopin's songs?</div><div class="id-pieces">Opus 34 No. 1 in A-flat (Valse brillante)</div></div>
-      <div class="id-row"><div class="id-key">Berlioz's symphony?</div><div class="id-pieces">Fantastic Symphony: Mvt 1 (Reveries-Passions), Mvt 4 (March to the Scaffold), Mvt 5 (Dream of a Witches' Sabbath)</div></div>
-      <div class="id-row"><div class="id-key">Brahms's songs?</div><div class="id-pieces">Clarinet Quintet in B Minor (opening)</div></div>
+      <div class="id-row"><div class="id-key">Late Romantic Opera composers?</div><div class="id-pieces">Puccini, Bizet, William Grant Still</div></div>
+      <div class="id-row"><div class="id-key">Puccini's piece?</div><div class="id-pieces">Mi Chiamano Mimì (La bohème) — Anna Netrebko</div></div>
+      <div class="id-row"><div class="id-key">Bizet's piece?</div><div class="id-pieces">Habanera (Carmen) — Maria Callas</div></div>
+      <div class="id-row"><div class="id-key">Still's piece?</div><div class="id-pieces">Selection from Troubled Island — Quanda Johnson</div></div>
+
+      <div class="id-row"><div class="id-key">Wagner's operas in this unit?</div><div class="id-pieces">Die Walküre, Tristan und Isolde</div></div>
+      <div class="id-row"><div class="id-key">Walküre selections?</div><div class="id-pieces">Prelude/Storm, Siegmund &amp; Sieglinde Meet, Spring Song, Siegmund &amp; the Sword, Ride of the Valkyries</div></div>
+      <div class="id-row"><div class="id-key">Tristan selection?</div><div class="id-pieces">Liebestod aria</div></div>
+      <div class="id-row"><div class="id-key">What is Gesamtkunstwerk?</div><div class="id-pieces">"Total artwork" — Wagner's union of music, drama, poetry, staging into a single work</div></div>
+      <div class="id-row"><div class="id-key">What is the Tristan Chord?</div><div class="id-pieces">F-B-D♯-G♯ — opens Tristan, suspended, never resolves on time. Recurs throughout.</div></div>
+      <div class="id-row"><div class="id-key">What is a leitmotif? ★</div><div class="id-pieces">Recurring musical theme tied to a character or idea (Wagner)</div></div>
+
+      <div class="id-row"><div class="id-key">Late Romantic / Early Modern composers?</div><div class="id-pieces">Dvořák, Debussy</div></div>
+      <div class="id-row"><div class="id-key">Dvořák's piece?</div><div class="id-pieces">New World Symphony, 2nd Mvt (Largo)</div></div>
+      <div class="id-row"><div class="id-key">Debussy's piece?</div><div class="id-pieces">Prelude to the Afternoon of a Faun</div></div>
+      <div class="id-row"><div class="id-key">Pentatonic piece? ★</div><div class="id-pieces">Dvořák New World Largo (5-note scale, no half-steps, folkish)</div></div>
+      <div class="id-row"><div class="id-key">Tritone piece? ★</div><div class="id-pieces">Debussy Faun (also Bernstein "Maria" — three whole steps, dreamy/ominous)</div></div>
+
+      <div class="id-row"><div class="id-key">High Modernism composer?</div><div class="id-pieces">Stravinsky</div></div>
+      <div class="id-row"><div class="id-key">Stravinsky's work?</div><div class="id-pieces">The Rite of Spring — Introduction, Girls' Dance, Spring Rounds, Procession of the Oldest, Glorification, Sacrificial Dance</div></div>
+      <div class="id-row"><div class="id-key">Ostinato piece? ★</div><div class="id-pieces">Stravinsky Rite of Spring (especially Spring Rounds — slow 4-beat repeated figure)</div></div>
+      <div class="id-row"><div class="id-key">What is polytonality?</div><div class="id-pieces">Two or more keys sounded simultaneously (Stravinsky's Girls' Dance superimposes two key chords)</div></div>
+
+      <div class="id-row"><div class="id-key">Second Viennese School composers?</div><div class="id-pieces">Schoenberg, Berg (and Webern)</div></div>
+      <div class="id-row"><div class="id-key">Schoenberg's piece?</div><div class="id-pieces">Variations for Orchestra Op. 31 (Introduction-Theme, Var. 1, Var. 2)</div></div>
+      <div class="id-row"><div class="id-key">Berg's opera?</div><div class="id-pieces">Wozzeck — Act III scenes 2 (Note), 4 (Chord), 5 (Regular Rhythm)</div></div>
+      <div class="id-row"><div class="id-key">12-tone piece? ★</div><div class="id-pieces">Schoenberg Variations for Orchestra (uses all 12 chromatic pitches in a row, no repeats)</div></div>
+      <div class="id-row"><div class="id-key">Atonal pieces? ★</div><div class="id-pieces">Schoenberg Variations, Berg Wozzeck (no tonal center, no home key)</div></div>
+      <div class="id-row"><div class="id-key">What is Sprechstimme?</div><div class="id-pieces">Speech-song — between speaking and singing, slides up and down in pitch (Schoenberg, Berg)</div></div>
+      <div class="id-row"><div class="id-key">What is Expressionism?</div><div class="id-pieces">Early-20c style — extreme emotion, distortion, atonality. Berg wrote Wozzeck during WWI.</div></div>
+
+      <div class="id-row"><div class="id-key">American Modern composers?</div><div class="id-pieces">Copland, Bernstein</div></div>
+      <div class="id-row"><div class="id-key">Copland's piece?</div><div class="id-pieces">Appalachian Spring — Doppio movimento + Moderato</div></div>
+      <div class="id-row"><div class="id-key">Bernstein's piece?</div><div class="id-pieces">West Side Story — Prologue, Jet Song, A Boy Like That / I Have a Love</div></div>
+
+      <div class="id-row"><div class="id-key">Jazz figures?</div><div class="id-pieces">Armstrong, Ellington, Hawkins, Parker, Coltrane</div></div>
+      <div class="id-row"><div class="id-key">Armstrong's piece?</div><div class="id-pieces">Cornet Chop Suey (improvised; "inventor of jazz")</div></div>
+      <div class="id-row"><div class="id-key">Ellington's piece?</div><div class="id-pieces">Mood Indigo (clarinet + muted trumpet + banjo)</div></div>
+      <div class="id-row"><div class="id-key">Hawkins's piece?</div><div class="id-pieces">Body and Soul</div></div>
+      <div class="id-row"><div class="id-key">Parker's piece?</div><div class="id-pieces">Cherokee (bebop)</div></div>
+      <div class="id-row"><div class="id-key">Coltrane's piece?</div><div class="id-pieces">Summertime</div></div>
+      <div class="id-row"><div class="id-key">What is bebop?</div><div class="id-pieces">Fast, complex jazz of the 1940s — notable saxophone solos (Parker, Gillespie)</div></div>
+      <div class="id-row"><div class="id-key">What are blue notes?</div><div class="id-pieces">Lowered 3rd, 5th, 7th — bent pitches characteristic of blues / jazz</div></div>
+
+      <div class="id-row"><div class="id-key">American Fusion composers?</div><div class="id-pieces">Joplin, Gershwin</div></div>
+      <div class="id-row"><div class="id-key">Joplin's pieces?</div><div class="id-pieces">Maple Leaf Rag, Treemonisha (Aunt Dinah Has Blowed the Horn)</div></div>
+      <div class="id-row"><div class="id-key">What is Treemonisha about?</div><div class="id-pieces">Ragtime opera — black town, education, woman trying to get an education. Some ragtime, not 100%.</div></div>
+      <div class="id-row"><div class="id-key">Gershwin's pieces?</div><div class="id-pieces">Porgy &amp; Bess (My Man's Gone Now, Bess You Is My Woman Now), Rhapsody in Blue</div></div>
+      <div class="id-row"><div class="id-key">What is Porgy and Bess?</div><div class="id-pieces">Gershwin opera set in low-income Charleston SC, observed black folk music. About a beggar and a heroin addict.</div></div>
+      <div class="id-row"><div class="id-key">Syncopation piece? ★</div><div class="id-pieces">Joplin Maple Leaf Rag (top + bottom against each other; also all jazz)</div></div>
+
+      <div class="id-row"><div class="id-key">Bonus: Cook's piece?</div><div class="id-pieces">Rare Swing Along recording — old, blues + jazzy, AfAm music</div></div>
+      <div class="id-row"><div class="id-key">Bonus: Dawson's piece?</div><div class="id-pieces">Negro Folk Symphony — opens sad, turns triumphant; brass (horn) opening</div></div>
+      <div class="id-row"><div class="id-key">Bonus: Modern Broadway pieces?</div><div class="id-pieces">Warm All Over (Most Happy Fella), How I Saved Roosevelt (Assassins), Jerry Likes My Corn</div></div>
     </div>
   </div>
 
@@ -434,268 +548,325 @@ body.player-open #study-view { padding-bottom: 80px; }
 
 <script>
 // ==================== SONG DATA ====================
-const PERIOD_ORDER = ['Medieval', 'Renaissance', 'Baroque', 'Classical', 'Romantic'];
+const PERIOD_ORDER = [
+  'Late Romantic Opera',
+  'Wagner',
+  'Late Romantic / Early Modern',
+  'High Modernism',
+  'Second Viennese School',
+  'American Modern',
+  'Jazz',
+  'American Fusions',
+  'Bonus IDs',
+];
 const PERIOD_INFO = {
-  'Medieval': { date: '1/29', reading: 'Kelly pp. 41-53', label: 'Medieval (Gregorian Chant & Early Polyphony)' },
-  'Renaissance': { date: '2/3', reading: 'Kelly pp. 65-79', label: 'Renaissance (Byrd & Dowland)' },
-  'Baroque': { date: '2/5, 2/10, 2/12', reading: 'Kelly pp. 91-160', label: 'Baroque (Monteverdi, Handel, Bach)' },
-  'Classical': { date: '2/17, 2/19, 2/24', reading: 'Kelly pp. 192-251', label: 'Classical (Mozart, Beethoven, Schubert)' },
-  'Romantic': { date: '2/26, 3/3, 3/5', reading: 'Kelly pp. 268-308', label: 'Romantic (Mendelssohn, Chopin, Berlioz, Brahms)' },
+  'Late Romantic Opera':          { date: '3/12', reading: '', label: 'Late Romantic Opera (Puccini, Bizet, Still)' },
+  'Wagner':                       { date: '3/24', reading: 'R: 345-9, 358-68', label: 'Wagner & the Gesamtkunstwerk (Walküre, Tristan)' },
+  'Late Romantic / Early Modern': { date: '3/26', reading: 'R: 373-4, 388-9', label: 'Late Romantic / Early Modern (Dvořák, Debussy)' },
+  'High Modernism':               { date: '3/31', reading: 'R: 412-3, 422-9', label: 'High Modernism (Stravinsky, Rite of Spring)' },
+  'Second Viennese School':       { date: '4/2',  reading: 'R: 435-9, 446-60', label: 'Second Viennese School (Schoenberg, Berg)' },
+  'American Modern':              { date: '4/7',  reading: '', label: 'American Modern (Copland, Bernstein)' },
+  'Jazz':                         { date: '4/14', reading: '', label: 'Jazz (Armstrong, Ellington, Hawkins, Parker, Coltrane)' },
+  'American Fusions':             { date: '4/16', reading: '', label: 'American Fusions (Joplin, Gershwin)' },
+  'Bonus IDs':                    { date: '',     reading: '', label: 'Bonus Identifications (Cook, Dawson, Modern Broadway)' },
 };
 const PIECES = [
-  { id: 'introit', name: 'Introit', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
-    desc: 'Monophony (Latin). "Puer natus est." All repeating a word and long notes. One melody, singing together.',
-    artistTheme: 'Gregorian Chants: no instruments, monophonic, repeating words with long sustained notes.' },
-  { id: 'kyrie', name: 'Kyrie', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
-    desc: 'Monophony (Greek). EHHHHH — melisma (stretching syllables for many notes). Listen for first word "Kyrie".',
-    artistTheme: 'Gregorian Chants: no instruments, monophonic, repeating words with long sustained notes.' },
-  { id: 'alleluia', name: 'Alleluia', composer: 'N/A', period: 'Medieval', play: 'Gregorian Chant', classDate: '1/29',
-    desc: 'Monophony (Latin). Listen for the first word "Alleluia" — this one is in monophony.',
-    artistTheme: 'Gregorian Chants: no instruments, monophonic, repeating words with long sustained notes.' },
-  { id: 'leoninus_alleluia', name: "Leoninus' Alleluia", composer: 'Leoninus', period: 'Medieval', play: 'Medieval Polyphony', classDate: '1/29',
-    desc: 'Polyphony (Latin). Discant — harmonizing with bass-soprano. Listen for "Alleluia" — this one is in polyphony (different melodies at same time).',
-    artistTheme: 'Early polyphony: multiple voices over chant. Organum.' },
-  { id: 'viderunt_omnes', name: "Perotinus' Viderunt Omnes", composer: 'Perotinus', period: 'Medieval', play: 'Medieval Polyphony', classDate: '1/29',
-    desc: 'Polyphony (Latin). Multiple voices singing simultaneously. More complex than Leoninus.',
-    artistTheme: 'Early polyphony: multiple voices over chant. Organum.' },
-  { id: 'byrd_agnus_dei', name: 'Agnus Dei', composer: 'Byrd', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Cascading/paired polyphonic imitation. No instruments. Sung in Latin. Sounds super angelic.',
-    artistTheme: 'Byrd: no instruments. Imitative polyphony.' },
-  { id: 'byrd_sweet_merry', name: 'This Sweet and Merry Month of May', composer: 'Byrd', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Sounds like chirping birds — polyphony pops off. In English. Short notes. Sounds like something to drink ale to.',
-    artistTheme: 'Byrd: no instruments. Imitative polyphony.' },
-  { id: 'dowland_can_she', name: 'Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Lute song/ayre (secular). Either a teen boy or deep voice woman singing. In English with lute. Renaissance quest vibes. Arrangements have similar melody in different ways.',
-    artistTheme: 'Dowland: uses instruments, in English, sounds like quest music. Plucking instrument (lute).' },
-  { id: 'dowland_arrangements', name: 'Arrangements of Can She Excuse My Wrongs', composer: 'Dowland', period: 'Renaissance', play: '', classDate: '2/3',
-    desc: 'Instrument picking strings, no singing. Variations include polyphony with singing and instruments.',
-    artistTheme: 'Dowland: uses instruments, in English, sounds like quest music. Plucking instrument (lute).' },
-  { id: 'monteverdi_ritornello', name: "Opening Ritornello and Prologue (L'Orfeo)", composer: 'Monteverdi', period: 'Baroque', play: "L'Orfeo", classDate: '2/5',
-    desc: 'Harpsichord heavy with lady opera. Between singing and speaking. Violin also. Not in English.',
-    artistTheme: "Monteverdi's Orfeo: solo singer with minimal accompaniment. Between singing and speaking. Not in English." },
-  { id: 'monteverdi_lament', name: "Orfeo's Lament", composer: 'Monteverdi', period: 'Baroque', play: "L'Orfeo", classDate: '2/5',
-    desc: 'Also known as "Tu se morta." One instrument and organ. Solo voice with minimal accompaniment.',
-    artistTheme: "Monteverdi's Orfeo: solo singer with minimal accompaniment. Between singing and speaking. Not in English." },
-  { id: 'handel_shepherds', name: 'There were shepherds (Messiah)', composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
-    desc: 'Woman singing. Oscillating strings + harpsichord. In English.',
-    artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
-  { id: 'handel_every_valley', name: "Ev'ry Valley (Messiah)", composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
-    desc: 'Man singing. Upbeat imitation. Harpsichord. Instruments mimic singer. In English.',
-    artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
-  { id: 'handel_hallelujah', name: 'Hallelujah chorus (Messiah)', composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
-    desc: 'Orchestra (English). Multiple people singing and repeating. Instruments louder during singing.',
-    artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
-  { id: 'handel_he_trusted', name: 'He trusted in God (Messiah)', composer: 'Handel', period: 'Baroque', play: 'Messiah', classDate: '2/10',
-    desc: 'Polyphonic imitation. Men and women singing. High and low at same time. Fast notes. Almost Renaissance-like but more complex instruments.',
-    artistTheme: "Handel's Messiah: in English. Mixes solo singing and chorus. Instruments echo singer. Sounds like church service for a king." },
-  { id: 'bach_prelude_fugue', name: 'Prelude and Fugue in C Minor', composer: 'Bach', period: 'Baroque', play: '', classDate: '2/12',
-    desc: 'NO SINGING. He goes ham at the harpsichord. Very fast strokes, sounds piano-like but plucking. Two counter-subjects, pedal point, ends with Picardy third. Always flowing, never a break. Fugue.',
-    artistTheme: 'Bach: solo harpsichord. Dramatic, always flowing, constant energy. Fugue structure.' },
-  { id: 'mozart_notte', name: 'Notte e giorno faticar (Don Giovanni)', composer: 'Mozart', period: 'Classical', play: 'Don Giovanni', classDate: '2/17',
-    desc: 'Orchestra (Italian). Servant singing "nononono." Grander orchestra. Dynamics changing and not constant.',
-    artistTheme: "Mozart's Don Giovanni: voices shaking, dynamics shifting, full orchestra. People singing over each other." },
-  { id: 'mozart_ensemble', name: 'Ensemble, Act I, Scene I (Don Giovanni)', composer: 'Mozart', period: 'Classical', play: 'Don Giovanni', classDate: '2/17',
-    desc: 'Orchestra (Italian). Three males and woman duet. Dramatic orchestra. First half arguing, second half polyphonic.',
-    artistTheme: "Mozart's Don Giovanni: voices shaking, dynamics shifting, full orchestra. People singing over each other." },
-  { id: 'mozart_la_ci', name: 'Là ci darem la mano (Don Giovanni)', composer: 'Mozart', period: 'Classical', play: 'Don Giovanni', classDate: '2/17',
-    desc: 'Orchestra (Italian). Waltzing male + woman duet. Soft clarinet in background. Sounds warm like a fireplace.',
-    artistTheme: "Mozart's Don Giovanni: voices shaking, dynamics shifting, full orchestra. People singing over each other." },
-  { id: 'beethoven_5_mvt1', name: 'Symphony No. 5 in C Minor - Mvt. 1', composer: 'Beethoven', period: 'Classical', play: 'Symphony No. 5', classDate: '2/19',
-    desc: 'NO SINGING. Full orchestra. Famous du du du dun. Fast moving and stressful. Then trumpets like king coming.',
-    artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
-  { id: 'beethoven_5_mvt2', name: 'Symphony No. 5 in C Minor - Mvt. 2', composer: 'Beethoven', period: 'Classical', play: 'Symphony No. 5', classDate: '2/19',
-    desc: 'NO SINGING. Full orchestra. Slower strings + orchestra. Trumpet marching band. Normal old school classical.',
-    artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
-  { id: 'beethoven_5_mvt3', name: 'Symphony No. 5 in C Minor - Mvt. 3', composer: 'Beethoven', period: 'Classical', play: 'Symphony No. 5', classDate: '2/19',
-    desc: 'NO SINGING. Full orchestra. Mysterious + grand — something is leading up to something. Fast horn transition. Very fast music in the middle.',
-    artistTheme: "Beethoven's 5th: grand symphonic work with dramatic shifts." },
-  { id: 'schubert_gretchen', name: 'Gretchen at the Spinning Wheel', composer: 'Schubert', period: 'Classical', play: '', classDate: '2/24',
-    desc: 'Voice + Piano (German). Woman singing with anxious fast piano. Sounds like suffering at a spinning wheel.',
-    artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
-  { id: 'schubert_erlking', name: 'The Erlking', composer: 'Schubert', period: 'Classical', play: '', classDate: '2/24',
-    desc: 'Voice + Piano (German). Male with super fast piano. Very creepy, like on a road trip. Major-minor shift.',
-    artistTheme: 'Schubert: German Lieder. Piano + solo voice. Dramatic and emotional.' },
-  { id: 'mendelssohn_violin', name: 'Violin Concerto in E Minor - Mvt. 1', composer: 'Mendelssohn', period: 'Romantic', play: '', classDate: '2/26',
-    desc: 'NO SINGING. Whiney violin with orchestra. Crying violin opening. Very sad.',
-    artistTheme: 'Mendelssohn: very sad crying violins.' },
-  { id: 'chopin_waltz', name: 'Waltz Op. 34, No. 1 in A-flat (Valse brillante)', composer: 'Chopin', period: 'Romantic', play: '', classDate: '2/26',
-    desc: 'NO SINGING. Piano waltz. Dancey ballroom music. Goes really fast at times. Very major key and happy.',
-    artistTheme: 'Chopin: piano waltzes. Virtuosic and expressive.' },
-  { id: 'berlioz_sym_mvt1', name: 'Fantastic Symphony - Mvt. 1 (Reveries - Passions)', composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
-    desc: 'NO SINGING. Horn-centric orchestra. Not a song you would hum to. Program music with idée fixe.',
-    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idée fixe." },
-  { id: 'berlioz_sym_mvt4', name: 'Fantastic Symphony - Mvt. 4 (March to the Scaffold)', composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
-    desc: 'NO SINGING. Horn-centric orchestra. Sounds like a march.',
-    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idée fixe." },
-  { id: 'berlioz_sym_mvt5', name: "Fantastic Symphony - Mvt. 5 (Dream of a Witches' Sabbath)", composer: 'Berlioz', period: 'Romantic', play: 'Fantastic Symphony', classDate: '3/3',
-    desc: "NO SINGING. Horn-centric orchestra. It sounds crazy chaotic (dream of a witch). Very creepy like an 80's slasher film. Part sounds chipper and too happy.",
-    artistTheme: "Berlioz: very horn-centric. Not songs you would hum to. Program music with idée fixe." },
-  { id: 'brahms_clarinet', name: 'Clarinet Quintet in B Minor - Opening', composer: 'Brahms', period: 'Romantic', play: '', classDate: '3/5',
-    desc: 'NO SINGING. Soft clarinet with strings. Chamber music.',
-    artistTheme: 'Brahms: late Romantic chamber music.' },
+  // ---------- 3/12 — Late Romantic Opera ----------
+  { id: 'puccini_mi_chiamano', name: 'Mi Chiamano Mimì', composer: 'Puccini', period: 'Late Romantic Opera', play: 'La bohème', classDate: '3/12',
+    desc: 'Lyrical lush soprano aria. Late-Romantic harmony, single voice over orchestra. Anna Netrebko sings. About Mimì meeting the poet Rodolfo in Paris.',
+    artistTheme: "Puccini: greatest Italian opera composer of the late Romantic. Real-people characters (not Greek gods). Famous for arias — solo opener for the singer. La bohème is about poverty, illness, love in Paris." },
+  { id: 'bizet_habanera', name: 'Habanera', composer: 'Bizet', period: 'Late Romantic Opera', play: 'Carmen', classDate: '3/12',
+    desc: 'DUM dum-DUM dum habanera rhythm. Descending chromatic line, mezzo-soprano. Maria Callas sings. About Carmen, a fiery gypsy woman seducing a soldier.',
+    artistTheme: 'Bizet: French Romantic, died young (heart attack right after Carmen got terrible reviews). Musical prodigy who struggled in Paris and earned a living transcribing other composers.' },
+  { id: 'still_troubled_island', name: 'Selection from Troubled Island', composer: 'William Grant Still', period: 'Late Romantic Opera', play: 'Troubled Island', classDate: '3/12',
+    desc: 'Sung in English with Caribbean / blues color. Quanda Johnson sings. About Haiti overthrowing the French and ending slavery in Haiti.',
+    artistTheme: 'William Grant Still: African American composer born in Jim Crow times. Musical genius who composed serious opera with AfAm cultural roots.' },
+
+  // ---------- 3/24 — Wagner & the Gesamtkunstwerk ----------
+  { id: 'wagner_walkure_prelude', name: 'Prelude / Storm', composer: 'Wagner', period: 'Wagner', play: 'Die Walküre', classDate: '3/24',
+    desc: 'Orchestral storm — heavy strings, brass tremolo, no singing yet. Sets the mythic mood for Act I.',
+    artistTheme: "Wagner: proud antisemitic German Romantic. His leitmotifs (orchestra passages tied to characters) carry the story. Die Walküre is a Gesamtkunstwerk — total artwork uniting music, costume, lighting, drama. He built a theater just for his works." },
+  { id: 'wagner_walkure_meeting', name: 'Siegmund and Sieglinde Meet', composer: 'Wagner', period: 'Wagner', play: 'Die Walküre', classDate: '3/24',
+    desc: "Woman singing in German. Man comes in. Heavy on strings, orchestra does a lot in the background. The orchestra communicates emotion through leitmotifs.",
+    artistTheme: "Wagner: proud antisemitic German Romantic. Leitmotifs carry the story. Die Walküre is a Gesamtkunstwerk." },
+  { id: 'wagner_walkure_spring', name: 'Spring Song (Winterstürme)', composer: 'Wagner', period: 'Wagner', play: 'Die Walküre', classDate: '3/24',
+    desc: 'Tenor sings of spring melting winter. Lush warming orchestra under a single soaring voice. German.',
+    artistTheme: "Wagner: leitmotifs, never-ending melody, no closed numbers." },
+  { id: 'wagner_walkure_sword', name: 'Siegmund and the Sword (Notung)', composer: 'Wagner', period: 'Wagner', play: 'Die Walküre', classDate: '3/24',
+    desc: "Tenor cries 'Notung! Notung!' as he names the sword. Triumphant brass, heroic key. German.",
+    artistTheme: "Wagner: leitmotifs (the Sword motive returns throughout the Ring cycle)." },
+  { id: 'wagner_walkure_ride', name: 'Ride of the Valkyries', composer: 'Wagner', period: 'Wagner', play: 'Die Walküre', classDate: '3/24',
+    desc: "Most iconic sound by Wagner. The sound when the squirrel is trying to get the acorn in Ice Age, or something massive shown in a movie. French horns + galloping triplets.",
+    artistTheme: "Wagner: leitmotifs, brass-heavy. The Valkyries bring the dead to the afterlife." },
+  { id: 'wagner_tristan_liebestod', name: 'Liebestod', composer: 'Wagner', period: 'Wagner', play: 'Tristan und Isolde', classDate: '3/24',
+    desc: "A lot of Wagner is singing almost like talking — the orchestra (leitmotifs) communicates the emotion. Isolde is singing over Tristan's dead body. Tristan Chord recurs.",
+    artistTheme: "Wagner: Tristan Chord (F-B-D♯-G♯) — opens the opera, suspended, never resolves on time. Recurs throughout." },
+
+  // ---------- 3/26 — Late Romantic / Early Modern ----------
+  { id: 'dvorak_new_world_2', name: 'New World Symphony, 2nd Mvt (Largo)', composer: 'Dvořák', period: 'Late Romantic / Early Modern', play: 'Symphony No. 9 "From the New World"', classDate: '3/26',
+    desc: "Pentatonic scale (5 notes, no half-steps — folkish). Sharp violin with drum. Starts with a beautiful strings piece, no singing. Trying to create the American sound, inspired by Native American music.",
+    artistTheme: "Dvořák: Czech composer who came to NYC. Studied AfAm and Native American music. Wrote folk-inflected American classical music." },
+  { id: 'debussy_faun', name: 'Prelude to the Afternoon of a Faun', composer: 'Debussy', period: 'Late Romantic / Early Modern', play: '', classDate: '3/26',
+    desc: "Tritones. Opens with a beautiful clarinet/flute solo. If you hear upbeat notes followed by a sudden minor shift then back to major — that's this. About a forest faun (half man, half mythical creature).",
+    artistTheme: "Debussy: French Impressionist composer. Music captures a mood, not a story A→B. Not linear." },
+
+  // ---------- 3/31 — High Modernism (Stravinsky, Rite of Spring) ----------
+  { id: 'stravinsky_rite_intro', name: 'Introduction', composer: 'Stravinsky', period: 'High Modernism', play: 'The Rite of Spring', classDate: '3/31',
+    desc: "Beautiful deep woodwind opening — that's the bassoon (in its highest register, sounds eerie). Music never really completes itself. Themes don't flow into each other.",
+    artistTheme: "Stravinsky: Russian who moved to the US. Famous for ballet music. Rite of Spring caused a riot at premiere." },
+  { id: 'stravinsky_rite_girls', name: "Dance of the Young Girls (Augurs of Spring)", composer: 'Stravinsky', period: 'High Modernism', play: 'The Rite of Spring', classDate: '3/31',
+    desc: "Polytonality — two keys at once. The ostinato chord here is built from chords in two different keys superimposed. Pounding repeated dissonant chord with off-beat accents.",
+    artistTheme: "Stravinsky: ostinato, polytonality, irregular rhythm. The Rite is non-linear." },
+  { id: 'stravinsky_rite_spring', name: 'Spring Rounds', composer: 'Stravinsky', period: 'High Modernism', play: 'The Rite of Spring', classDate: '3/31',
+    desc: "Starts with a beautiful clarinet woodwind solo. The slow four-beat figure that repeats is called ostinato.",
+    artistTheme: "Stravinsky: ostinato is the signature device. Rite is non-linear, melody never resolves." },
+  { id: 'stravinsky_rite_procession', name: 'Procession of the Oldest and Wisest', composer: 'Stravinsky', period: 'High Modernism', play: 'The Rite of Spring', classDate: '3/31',
+    desc: "A ton of loud horror-movie sounds, like a murder scene. Chaos. Brass and percussion crashes.",
+    artistTheme: "Stravinsky: pounding ostinato, savage rhythm, percussive." },
+  { id: 'stravinsky_rite_glorif', name: 'Glorification of the Chosen One', composer: 'Stravinsky', period: 'High Modernism', play: 'The Rite of Spring', classDate: '3/31',
+    desc: "Violent, irregular meter — the chosen sacrificial girl is celebrated. Brass stabs and pounding accents.",
+    artistTheme: "Stravinsky: ostinato + polytonality + irregular meter." },
+  { id: 'stravinsky_rite_sacrif', name: 'Sacrificial Dance', composer: 'Stravinsky', period: 'High Modernism', play: 'The Rite of Spring', classDate: '3/31',
+    desc: "Frantic, breathless. The chosen girl dances herself to death. Constant changing meter. The ballet's brutal climax.",
+    artistTheme: "Stravinsky: the climax of the Rite. Most famous example of irregular rhythm and ostinato." },
+
+  // ---------- 4/2 — Second Viennese School ----------
+  { id: 'schoenberg_variations', name: 'Variations for Orchestra Op. 31', composer: 'Schoenberg', period: 'Second Viennese School', play: '', classDate: '4/2',
+    desc: "Sounds creepy, no singing. Twelve-tone method — the melody follows a row of all 12 chromatic pitches. Forces the listener to listen beyond 'something pretty.'",
+    artistTheme: "Schoenberg: founding father of atonal music. Second Viennese School. Discovered how to abandon traditional harmony." },
+  { id: 'berg_wozzeck_act3_sc2', name: 'Wozzeck Act III sc. 2 (Invention on a Note)', composer: 'Berg', period: 'Second Viennese School', play: 'Wozzeck', classDate: '4/2',
+    desc: "Brings Marie to the pond and stabs her. Creepy xylophone opening, horror-movie–esque music. Sprechstimme.",
+    artistTheme: "Berg: expressionist, atonal opera. About a poor abused soldier — written during WWI when Austria lost its empire." },
+  { id: 'berg_wozzeck_act3_sc4', name: 'Wozzeck Act III sc. 4 (Invention on a Chord)', composer: 'Berg', period: 'Second Viennese School', play: 'Wozzeck', classDate: '4/2',
+    desc: "Returns to the pond to find the knife and hide it, but drowns in the pond. Built on a single sustained chord.",
+    artistTheme: "Berg: atonal opera, Sprechstimme. A whole scene built on one chord." },
+  { id: 'berg_wozzeck_act3_sc5', name: 'Wozzeck Act III sc. 5 (Invention on a Regular Rhythm)', composer: 'Berg', period: 'Second Viennese School', play: 'Wozzeck', classDate: '4/2',
+    desc: "Marie's son is teased by other children that she died. Children talking and singing, flute playing. Sprechstimme.",
+    artistTheme: "Berg: atonal opera, Sprechstimme, expressionism. The children's epilogue is devastating." },
+
+  // ---------- 4/7 — American Modern ----------
+  { id: 'copland_appalachian_doppio', name: 'Appalachian Spring — Doppio movimento', composer: 'Copland', period: 'American Modern', play: 'Appalachian Spring', classDate: '4/7',
+    desc: "Sounds like the Founding Fathers walking down the street smiling after signing the Declaration of Independence. Very upbeat and positive. Open intervals.",
+    artistTheme: "Copland: Brooklyn-born Jewish composer who wanted to invent American classical music. Wrote what America 'sounds like' — open plains, cowboy life — though he grew up in a tenement." },
+  { id: 'copland_appalachian_moderato', name: 'Appalachian Spring — Moderato', composer: 'Copland', period: 'American Modern', play: 'Appalachian Spring', classDate: '4/7',
+    desc: "Utterly beautiful, cuts you in half. Sounds like the ending to a happy western movie. Starts with the whole symphony at once, not a solo instrument.",
+    artistTheme: "Copland: open intervals (4ths/5ths), wholesome 'Simple Gifts' Americana." },
+  { id: 'bernstein_wss_prologue', name: 'West Side Story — Prologue', composer: 'Bernstein', period: 'American Modern', play: 'West Side Story', classDate: '4/7',
+    desc: "Tritone and general dissonance. Clashing keys played on top of each other with sleigh-bell delay.",
+    artistTheme: "Bernstein: West Side Story — Romeo & Juliet set in NYC with two gangs (Jets vs Sharks). Uses tritone and dissonance to make musical-theater feel like real menace." },
+  { id: 'bernstein_wss_jet_song', name: 'West Side Story — Jet Song', composer: 'Bernstein', period: 'American Modern', play: 'West Side Story', classDate: '4/7',
+    desc: "Walking-down-the-street music with clashing notes — sounds like chase / mean music. Notes set against each other.",
+    artistTheme: "Bernstein: gang music with snappy syncopated rhythms and jazz-flavored orchestration." },
+  { id: 'bernstein_wss_boy_have_love', name: 'West Side Story — A Boy Like That / I Have a Love', composer: 'Bernstein', period: 'American Modern', play: 'West Side Story', classDate: '4/7',
+    desc: "Tritone and general dissonance. Two women singing — Anita warns, Maria insists on her love.",
+    artistTheme: "Bernstein: tritone-driven harmony, jazz-flavored." },
+
+  // ---------- 4/14 — Jazz ----------
+  { id: 'armstrong_cornet_chop_suey', name: 'Cornet Chop Suey', composer: 'Louis Armstrong', period: 'Jazz', play: '', classDate: '4/14',
+    desc: "Sounds like a saxophone in old music and really upbeat like Mickey Mouse music. Improvised cornet solo.",
+    artistTheme: "Louis Armstrong: thought of as the inventor of jazz. Famous for improvisation. Jazz = ragtime + blue notes (flattened pitches), improvised." },
+  { id: 'ellington_mood_indigo', name: 'Mood Indigo', composer: 'Duke Ellington', period: 'Jazz', play: '', classDate: '4/14',
+    desc: "Kind of sounds like the train tracks and trippy like night time. Beautiful sound mixing clarinet, muted trumpet, and banjo.",
+    artistTheme: "Duke Ellington: made some of the most beautiful sounds in jazz; got more complicated as he aged." },
+  { id: 'hawkins_body_and_soul', name: 'Body and Soul', composer: 'Coleman Hawkins', period: 'Jazz', play: '', classDate: '4/14',
+    desc: "Opens with a beautiful piano piece — something a romantic movie might open with. Long tenor-sax improvisation.",
+    artistTheme: "Coleman Hawkins: tenor saxophonist; Body and Soul (1939) is one of the most important jazz recordings." },
+  { id: 'parker_cherokee', name: 'Cherokee', composer: 'Charlie Parker', period: 'Jazz', play: '', classDate: '4/14',
+    desc: "Fast bebop saxophone. Lightning runs over complex chord changes. Notable saxophone solo.",
+    artistTheme: "Charlie Parker: bebop — fast, complex jazz of the 1940s. Notable saxophone solos." },
+  { id: 'coltrane_summertime', name: 'Summertime', composer: 'John Coltrane', period: 'Jazz', play: '', classDate: '4/14',
+    desc: "Saxophone dominating. Kind of sounds like black-tie-event background music at a gala.",
+    artistTheme: "John Coltrane: modal-jazz tenor saxophonist. Sax improvisation drives the piece." },
+
+  // ---------- 4/16 — American Fusions ----------
+  { id: 'joplin_maple_leaf_rag', name: 'Maple Leaf Rag', composer: 'Joplin', period: 'American Fusions', play: '', classDate: '4/16',
+    desc: "Opens super chippy on the piano. Ragtime — top and bottom doing two different things (syncopation). Right hand and left hand not in sync.",
+    artistTheme: "Joplin: turned ragtime into an art form, treated like Chopin. Maple Leaf Rag made his career — 3-4 minute pieces making ragtime elaborate." },
+  { id: 'joplin_treemonisha_dinah', name: 'Treemonisha — Aunt Dinah Has Blowed the Horn', composer: 'Joplin', period: 'American Fusions', play: 'Treemonisha', classDate: '4/16',
+    desc: "Starts with a horn sound. Women singing really really happy and fast — sounds like a cult in a horror movie. From Treemonisha, about an educated black woman in an uneducated town.",
+    artistTheme: "Joplin's Treemonisha: ragtime-based opera (not 100% ragtime). About education and the black race; the heroine nearly gets killed for trying to get educated." },
+  { id: 'gershwin_my_mans_gone', name: "Porgy and Bess — My Man's Gone Now", composer: 'Gershwin', period: 'American Fusions', play: 'Porgy and Bess', classDate: '4/16',
+    desc: "From Porgy and Bess. Folk-black-music influence. After a fight her boyfriend dies. Starts with a woman crying.",
+    artistTheme: "Gershwin: combined ragtime with blues; American musical theater grew out of his style. Porgy and Bess is a folk-black-music opera set in low-income Charleston SC." },
+  { id: 'gershwin_bess_you_is', name: "Porgy and Bess — Bess, You Is My Woman Now", composer: 'Gershwin', period: 'American Fusions', play: 'Porgy and Bess', classDate: '4/16',
+    desc: "From Porgy and Bess. The line 'bess you is my women now' is sung in blue notes. Very Gershwin. Starts with a man singing.",
+    artistTheme: "Gershwin: ragtime + blues fusion; folk-black-music opera." },
+  { id: 'gershwin_rhapsody', name: 'Rhapsody in Blue', composer: 'Gershwin', period: 'American Fusions', play: '', classDate: '4/16',
+    desc: "Famous clarinet glissando opening. Piano + jazz band. Ragtime mixed with blues.",
+    artistTheme: "Gershwin: jazz-classical fusion. Died young — leaves us wondering where he would have gone." },
+
+  // ---------- Bonus IDs (in IDs section but not on dated syllabus) ----------
+  { id: 'cook_swing_along', name: 'Swing Along (rare recording)', composer: 'Will Marion Cook', period: 'Bonus IDs', play: '', classDate: '',
+    desc: "Sounds really old but blues and jazzy with singing. African American music.",
+    artistTheme: "Cook: African American composer; this is a rare period recording." },
+  { id: 'dawson_negro_folk_symphony', name: 'Negro Folk Symphony', composer: 'William Levi Dawson', period: 'Bonus IDs', play: '', classDate: '',
+    desc: "Opens sad-like but turns into triumphant music. Opens with the sound of brass (horn). Written in Sonata form.",
+    artistTheme: "William Levi Dawson: African American composer; Negro Folk Symphony fuses spirituals with classical symphonic form (Sonata form)." },
+  { id: 'loesser_warm_all_over', name: 'Warm All Over', composer: 'Frank Loesser', period: 'Bonus IDs', play: 'The Most Happy Fella', classDate: '',
+    desc: "From The Most Happy Fella. About an aging Italian-American who falls for a waitress, sends her a younger man's photo, and proposes. A tragedy — she falls in love with the man in the photo.",
+    artistTheme: "Modern Broadway: tragic romantic-comedy musical." },
+  { id: 'sondheim_how_i_saved', name: 'How I Saved Roosevelt', composer: 'Sondheim', period: 'Bonus IDs', play: 'Assassins', classDate: '',
+    desc: "From Assassins. About people who tried (or succeeded) to assassinate the president. Sounds very patriotic.",
+    artistTheme: "Modern Broadway: dark satirical musical about presidential assassins." },
+  { id: 'jerry_likes_my_corn', name: 'Jerry Likes My Corn', composer: 'N/A', period: 'Bonus IDs', play: '', classDate: '',
+    desc: "Singing about corn — about cooking for Jerry. About a woman and her daughter living in a decaying mansion.",
+    artistTheme: "Modern Broadway: a number about everyday domesticity in a decaying world." },
 ];
 
 // ==================== PIECE TERMS ====================
 const PIECE_TERMS = {
-  introit: ['Monophonic', 'Latin', 'Melisma', 'Pitch', 'Melody'],
-  kyrie: ['Monophonic', 'Greek', 'Melisma', 'Pitch', 'Melody'],
-  alleluia: ['Monophonic', 'Latin', 'Melisma'],
-  leoninus_alleluia: ['Polyphonic', 'Latin', 'Organum', 'Discant', 'Strands', 'Sustained note'],
-  viderunt_omnes: ['Polyphonic', 'Latin', 'Organum', 'Strands', 'Sustained note'],
-  byrd_agnus_dei: ['Imitative polyphony', 'Latin', 'Motet', 'Soprano', 'Alto', 'Tenor', 'Bass'],
-  byrd_sweet_merry: ['Imitative polyphony', 'English', 'Madrigal', 'Word painting'],
-  dowland_can_she: ['English', 'Arrangement', 'Homophony', 'Lute'],
-  dowland_arrangements: ['Arrangement', 'Instrumental'],
-  monteverdi_ritornello: ['Ritornello', 'Strophic variation', 'Basso continuo', 'Italian', 'Baroque'],
-  monteverdi_lament: ['Basso continuo', 'Glottal strokes', 'Recitative', 'Italian', 'Baroque'],
-  handel_shepherds: ['Recitative', 'English', 'Baroque', 'Basso continuo'],
-  handel_every_valley: ['Aria', 'English', 'Baroque', 'Melisma', 'Cadenza'],
-  handel_hallelujah: ['Homophony', 'Polyphonic', 'English', 'Baroque', 'Forte', 'Piano'],
-  handel_he_trusted: ['Imitative polyphony', 'English', 'Baroque', 'Fugue'],
-  bach_prelude_fugue: ['Fugue', 'Exposition', 'Subject', 'Episode', 'Counter subject', 'Pedal point', 'Picardy third', 'Baroque'],
-  mozart_notte: ['Opera buffa', 'Italian', 'Recitative', 'Aria', 'Sonata form'],
-  mozart_ensemble: ['Opera buffa', 'Italian', 'Polyphonic', 'Chromatic'],
-  mozart_la_ci: ['Opera buffa', 'Italian', 'Aria', 'Bel canto', 'Major'],
-  beethoven_5_mvt1: ['Sonata form', 'Exposition', '1st theme', '2nd theme', 'Development', 'Recapitulation', 'Coda', 'Minor'],
-  beethoven_5_mvt2: ['Movement', 'Major', 'Andante'],
-  beethoven_5_mvt3: ['Movement', 'Minor', 'Allegro'],
-  schubert_gretchen: ['Lied', 'Through-composed', 'German', 'Minor', 'Ritardando'],
-  schubert_erlking: ['Lied', 'Through-composed', 'German', 'Minor', 'Major', 'Allegro'],
-  mendelssohn_violin: ['Virtuoso', 'Vibrato', 'Legato', 'Cadenza', 'Romantic', 'Minor'],
-  chopin_waltz: ['Virtuoso', 'Arpeggio', 'Triple', 'Major', 'Romantic'],
-  berlioz_sym_mvt1: ['Program music', 'Idée fixe', 'Romantic', 'Sonata form'],
-  berlioz_sym_mvt4: ['Program music', 'Idée fixe', 'Romantic'],
-  berlioz_sym_mvt5: ['Program music', 'Idée fixe', 'Romantic', 'Chromatic'],
-  brahms_clarinet: ['Romantic', 'Minor', 'Legato', 'Vibrato'],
+  // Late Romantic Opera
+  puccini_mi_chiamano:        ['Aria', 'Soprano', 'Italian', 'Romantic', 'Verismo'],
+  bizet_habanera:             ['Aria', 'Mezzo-soprano', 'Habanera', 'Chromatic', 'Romantic'],
+  still_troubled_island:      ['Aria', 'English', 'Romantic'],
+
+  // Wagner
+  wagner_walkure_prelude:     ['Leitmotif', 'Gesamtkunstwerk', 'German', 'Romantic'],
+  wagner_walkure_meeting:     ['Leitmotif', 'Gesamtkunstwerk', 'German', 'Romantic'],
+  wagner_walkure_spring:      ['Leitmotif', 'Gesamtkunstwerk', 'German', 'Aria', 'Tenor'],
+  wagner_walkure_sword:       ['Leitmotif', 'Gesamtkunstwerk', 'German', 'Tenor', 'Brass'],
+  wagner_walkure_ride:        ['Leitmotif', 'Gesamtkunstwerk', 'Brass'],
+  wagner_tristan_liebestod:   ['Leitmotif', 'Tristan Chord', 'Soprano', 'German', 'Aria'],
+
+  // Late Romantic / Early Modern
+  dvorak_new_world_2:         ['Pentatonic', 'Symphony', 'Folk music', 'English horn'],
+  debussy_faun:               ['Tritone', 'Impressionism', 'Flute'],
+
+  // High Modernism
+  stravinsky_rite_intro:      ['Bassoon', 'Modernism'],
+  stravinsky_rite_girls:      ['Ostinato', 'Polytonality', 'Modernism'],
+  stravinsky_rite_spring:     ['Ostinato', 'Modernism'],
+  stravinsky_rite_procession: ['Modernism', 'Polytonality', 'Brass'],
+  stravinsky_rite_glorif:     ['Ostinato', 'Modernism', 'Brass'],
+  stravinsky_rite_sacrif:     ['Ostinato', 'Polytonality', 'Modernism'],
+
+  // Second Viennese School
+  schoenberg_variations:      ['Atonality', '12-tone row', 'Second Viennese School', 'Expressionism'],
+  berg_wozzeck_act3_sc2:      ['Atonality', 'Sprechstimme', 'Second Viennese School', 'Expressionism', 'German'],
+  berg_wozzeck_act3_sc4:      ['Atonality', 'Sprechstimme', 'Second Viennese School', 'Expressionism', 'German'],
+  berg_wozzeck_act3_sc5:      ['Atonality', 'Sprechstimme', 'Second Viennese School', 'Expressionism', 'German'],
+
+  // American Modern
+  copland_appalachian_doppio:   ['American Modern', 'Open intervals'],
+  copland_appalachian_moderato: ['American Modern', 'Open intervals'],
+  bernstein_wss_prologue:     ['Tritone', 'General dissonance', 'Syncopation'],
+  bernstein_wss_jet_song:     ['Tritone', 'General dissonance', 'Syncopation'],
+  bernstein_wss_boy_have_love:['Tritone', 'General dissonance'],
+
+  // Jazz
+  armstrong_cornet_chop_suey: ['Jazz', 'Improvisation', 'Blue notes', 'Syncopation', 'Scatting'],
+  ellington_mood_indigo:      ['Jazz', 'Swing', 'Blue notes'],
+  hawkins_body_and_soul:      ['Jazz', 'Improvisation', 'Tenor saxophone'],
+  parker_cherokee:            ['Bebop', 'Jazz', 'Improvisation'],
+  coltrane_summertime:        ['Jazz', 'Improvisation', 'Modal'],
+
+  // American Fusions
+  joplin_maple_leaf_rag:      ['Syncopation', 'Ragtime', 'Stride piano'],
+  joplin_treemonisha_dinah:   ['Ragtime', 'Syncopation', 'Aria'],
+  gershwin_my_mans_gone:      ['Blue notes', 'Aria', 'English'],
+  gershwin_bess_you_is:       ['Blue notes', 'Aria', 'English'],
+  gershwin_rhapsody:          ['Jazz', 'Blue notes', 'Syncopation'],
+
+  // Bonus IDs
+  cook_swing_along:           ['Jazz', 'Blue notes'],
+  dawson_negro_folk_symphony: ['Symphony', 'Folk music', 'Brass', 'Sonata form'],
+  loesser_warm_all_over:      ['Modern Broadway'],
+  sondheim_how_i_saved:       ['Modern Broadway'],
+  jerry_likes_my_corn:        ['Modern Broadway'],
 };
 
 // ==================== TERM DEFINITIONS ====================
 const TERM_DEFS = {
-  'Pitch': 'How high or low a note sounds.',
-  'Meter': 'Recurring pattern of strong and weak beats.',
-  'Melody': 'A sequence of pitches forming a recognizable musical line.',
-  'Scale': 'An ordered series of pitches ascending or descending by step.',
-  'Octave': 'Interval between one pitch and the next with double its frequency.',
-  'Interval': 'The distance in pitch between two notes.',
-  'Duple': 'Meter grouped in twos (strong-weak, like a march).',
-  'Triple': 'Meter grouped in threes (strong-weak-weak, like a waltz).',
-  'Tempo': 'The speed at which music is performed.',
-  'Adagio': 'Slow tempo, slower than andante.',
-  'Andante': 'Moderate walking-pace tempo.',
-  'Lento': 'Very slow tempo.',
-  'Moderato': 'Moderate tempo, between andante and allegro.',
-  'Allegro': 'Fast, lively tempo.',
-  'Presto': 'Very fast tempo, faster than allegro.',
-  'Accelerando': 'Gradually speeding up the tempo.',
-  'Ritardando': 'Gradually slowing down the tempo.',
-  'Rallentando': 'Gradually slowing down (synonymous with ritardando).',
-  'Sharp': 'Raises a pitch by one half step.',
-  'Flat': 'Lowers a pitch by one half step.',
-  'Thirds (happy)': 'Intervals of a third sound warm and cheerful.',
-  'Fourths (warmth)': 'Perfect fourths sound open and warm, common in hymns.',
-  'Fifths': 'Perfect fifths sound open and hollow.',
-  'Harmony': 'Two or more pitches sounding simultaneously.',
-  'Third': 'An interval spanning three scale degrees (e.g., C to E).',
-  'Triad (key)': 'A three-note chord built by stacking two thirds.',
-  'Half step': 'The smallest interval in Western music (e.g., E to F).',
-  'Tonality': 'Organization of music around a central pitch or tonic.',
-  'Tonic': 'The home pitch or chord of a key (scale degree 1).',
-  'Subdominant': 'The fourth scale degree or its chord, pulls toward dominant.',
-  'Dominant': 'The fifth scale degree or its chord, creates tension toward tonic.',
-  'Major': 'Key or scale with a bright, happy quality; has a major third.',
-  'Minor': 'Key or scale with a dark, sad quality; has a minor third.',
-  'Forte': 'Loud dynamic level.',
-  'Piano': 'Soft dynamic level (also the instrument).',
-  'Crescendo': 'Gradually getting louder.',
-  'Decrescendo': 'Gradually getting softer.',
-  'Monophonic': 'Single melodic line with no accompaniment or harmony.',
-  'Polyphonic': 'Multiple independent melodic lines sounding simultaneously.',
-  'Strands': 'Individual melodic lines within a polyphonic texture.',
-  'Sustained note': 'A long held pitch beneath moving voices, as in organum.',
-  'Organum': 'Early medieval polyphony adding voices above a plainchant melody.',
-  'Discant': 'Style of organum where all voices move in measured rhythm.',
-  'Imitative': 'Voices enter successively repeating the same melodic idea.',
-  'Melisma': 'Many notes sung on a single syllable of text.',
-  'Soprano': 'Highest standard vocal range, typically a woman\u2019s voice.',
-  'Alto': 'Lower female (or countertenor) vocal range, below soprano.',
-  'Tenor': 'Higher male vocal range, below alto.',
-  'Bass': 'Lowest male vocal range.',
-  'Imitative polyphony': 'Voices enter in turn with the same melody.',
-  'Homophony': 'One main melody supported by chordal accompaniment.',
-  'Motet': 'Sacred polyphonic choral work, usually in Latin, unaccompanied.',
-  'Madrigal': 'Secular polyphonic vocal piece with expressive text setting.',
-  'Word painting': 'Musical sounds directly illustrate the meaning of lyrics.',
-  'Arrangement': 'Adaptation of a composition for different instruments or voices.',
-  'Ritornello': 'Recurring orchestral passage alternating with solo sections.',
-  'Strophic variation': 'Same melody repeated each verse with varied accompaniment.',
-  'Basso continuo': 'Baroque bass line plus improvised chordal harmony above it.',
-  'Glottal strokes': 'Sharp vocal attacks by abruptly opening the vocal folds.',
-  'Recitative': 'Speech-like singing that advances the plot in opera.',
-  'Aria': 'Lyrical solo song in opera showcasing vocal skill.',
-  'Cadenza': 'Virtuosic unaccompanied solo passage, usually near a movement\u2019s end.',
-  'Fugue': 'Polyphonic composition built on a subject imitated across all voices.',
-  'Exposition': 'Opening section where themes or fugue subject are introduced.',
-  'Subject': 'The main melodic theme of a fugue.',
-  'Episode': 'Passage in a fugue between subject entries, often using sequences.',
-  'Baroque': 'Musical era (~1600\u20131750) with ornate style and basso continuo.',
-  'Pizzicato': 'Plucking strings with fingers instead of using the bow.',
-  'Libretto': 'The text or script of an opera.',
-  'Opera seria': 'Serious opera with noble characters and heroic plots.',
-  'Opera buffa': 'Comic opera with everyday characters and humorous plots.',
-  'Bel canto': 'Italian vocal style emphasizing beautiful tone and agility.',
-  'Chromatic': 'Using notes outside the key\u2019s scale, moving by half steps.',
-  'Counter subject': 'Secondary melody that accompanies the main fugue subject.',
-  'Pedal point': 'A sustained note held while harmonies change above it.',
-  'Movement': 'A self-contained section within a larger musical work.',
-  'Sonata form': 'Three-part structure: exposition, development, recapitulation.',
-  '1st theme': 'The opening main melody presented in the exposition.',
-  '2nd theme': 'A contrasting melody in a new key during the exposition.',
-  'Transitions': 'Passages connecting themes, often modulating between keys.',
-  'Closing': 'Final passage of the exposition that confirms the new key.',
-  'Development': 'Middle section that fragments and transforms exposition themes.',
-  'Recapitulation': 'Return of exposition material with both themes in the home key.',
-  'Coda': 'A concluding passage added after the main structure ends.',
-  'Lied': 'German art song for voice and piano, often setting poetry.',
-  'Through-composed': 'Song with new music for each stanza, no repeated sections.',
-  'Arpeggio': 'Notes of a chord played one after another.',
-  'Virtuoso': 'A performer with exceptional technical skill.',
-  'Vibrato': 'Rapid, slight pitch variation that adds warmth to a note.',
-  'Legato': 'Smooth, connected playing with no gaps between notes.',
-  'Harmonics': 'High, bell-like tones produced by lightly touching a string.',
-  'Trilling': 'Rapid alternation between two adjacent notes.',
-  'Double stop': 'Playing two strings simultaneously on a bowed instrument.',
-  'Program music': 'Instrumental music that tells a story or depicts ideas.',
-  'Romantic': '19th-century era emphasizing emotion and expressive freedom.',
-  'Id\u00e9e fixe': 'A recurring theme representing a fixed obsession (Berlioz).',
-  'Picardy third': 'Ending a minor-key piece with a major chord.',
-  'Latin': 'Language of Catholic liturgical music (Mass, chant).',
-  'Greek': 'Language of the Kyrie; its theory shaped Western music.',
-  'English': 'Language used in Handel\u2019s Messiah and Byrd\u2019s madrigals.',
-  'Italian': 'Language dominant in opera; source of most tempo markings.',
-  'German': 'Language of Lieder (Schubert) and Wagner\u2019s operas.',
-  'Instrumental': 'Music performed by instruments alone, no vocal parts.',
-  'Lute': 'Plucked string instrument with rounded back, popular in Renaissance.',
+  // ★ Critical exam terms — also tagged via STARRED_TERMS for the gold star UI
+  'Leitmotif':      'Short recurring musical idea representing a character, object, or concept (Wagner).',
+  'Pentatonic':     'Only uses five notes instead of 12 (or traditional Western harmony). Native-American flavored. Heard in Dvořák New World Largo.',
+  'Tritone':        'Sounds threatening. The music goes a half step down and does a major-to-minor switch — sounds ominous (Debussy Faun, Bernstein "Maria").',
+  'Ostinato':       'A chord or phrase repeated over and over (the slow four-beat figure at the beginning of "Spring Rounds" in Stravinsky).',
+  'Atonality':      "Music with no home key. Traditional music has a tonal center (like 'we’re in C major') that gives predictability and resolution. Atonal music abandons that completely — nothing ever lands or resolves. Sounds unsettling because your ear is always waiting for something that never comes. Popularized by Schoenberg and Berg.",
+  '12-tone row':    "Schoenberg's specific method for achieving atonality — basically a rulebook. Take all 12 notes on a piano, arrange them in a specific order of your choosing; that sequence is your 'row,' and the piece must follow it.",
+  'Syncopation':    'When the top and bottom go against each other (piano: right hand off-beat against left hand). Signature of ragtime and jazz.',
+
+  // Wagner-era
+  'Gesamtkunstwerk':'"Total artwork" — Wagner\'s union of music, drama, poetry, costume, lighting. Die Walküre is one (NOT an opera).',
+  'Tristan Chord':  'F-B-D♯-G♯ — opens Tristan und Isolde; suspended dissonance that delays resolution. Recurs throughout.',
+
+  // Modernism
+  'Impressionism':  "French style (Debussy) — captures a specific mood, color, and feeling at a moment. Music is non-linear; doesn't go from A to B.",
+  'Modernism':      '20th-c rejection of traditional tonality and form.',
+  'Polytonality':   "Two or more keys sounded simultaneously (Stravinsky's Girls' Dance superimposes chords from two keys).",
+
+  // Second Viennese
+  'Sprechstimme':            'Speech-song between speaking and singing — slides up and down in pitch.',
+  'Second Viennese School':  'Schoenberg, Berg, Webern — Vienna composers who developed atonality and 12-tone technique.',
+  'Expressionism':           'Early-20c style — extreme emotion, distortion, atonality. Berg wrote Wozzeck during WWI when Austria lost its empire.',
+
+  // Jazz / American
+  'Jazz':            'Flattening notes to make blue notes. The flattening of notes in ragtime is what becomes jazz. Stems from ragtime — ragtime + blue notes combined and improvised.',
+  'Blue notes':      'Lowered 3rd, 5th, 7th — bent / flattened pitches characteristic of blues and jazz.',
+  'Improvisation':   'Spontaneous composition during performance; central to jazz (Armstrong famous for it).',
+  'Bebop':           'Fast, complex jazz of the 1940s (Parker, Gillespie). Notable saxophone solos.',
+  'Swing':           'Rhythmic feel that lengthens the first of each pair of eighth notes; jazz pulse.',
+  'Modal':           'Music based on modes (scales other than major/minor); Coltrane jazz idiom.',
+  'Scatting':        'In jazz, improvising with words ("bababa"). A lot of female jazz musicians became well known through scatting.',
+  'Ragtime':         'The top and bottom go against each other (piano). Made to be fun and catchy — for dancing. Joplin turned it into an art form.',
+  'Stride piano':    "Left hand alternates bass note + chord ('stride') under syncopated right-hand melody.",
+  'Habanera':        "Cuban-derived dance rhythm (DUM dum-DUM dum) used in Bizet's Carmen.",
+  'Verismo':         "Late-1800s Italian opera realism — real-people stories, not myths (Puccini).",
+  'Modern Broadway': 'Mid-20c American musical theater (Loesser, Sondheim, etc.).',
+  'American Modern': '20c American classical style (Copland) — open intervals, plains/cowboy Americana.',
+  'Open intervals':  "Perfect 4ths and 5ths — sound spacious and 'American' (Copland).",
+  'Dissonance':      'Notes sounded together that clash unstably (Stravinsky Rite of Spring, Schoenberg).',
+  'General dissonance': 'When two keys clash — played on top of each other with sleigh-bell delay. The chase-music sound effect of West Side Story.',
+
+  // Forms
+  'Sonata form':     'Three-part structure: exposition (themes), development (themes transformed), recapitulation (themes return in home key). Used by Dawson in Negro Folk Symphony.',
+
+  // Voices and instruments
+  'Soprano':         "Highest standard vocal range, typically a woman's voice.",
+  'Mezzo-soprano':   'Female vocal range between soprano and alto.',
+  'Tenor':           'Higher male vocal range.',
+  'Aria':            'Lyrical solo song in opera showcasing vocal skill.',
+  'Bassoon':         'Low woodwind double-reed; opens Stravinsky Rite of Spring (high register, eerie).',
+  'Flute':           'High woodwind without reed; opens Debussy Faun.',
+  'English horn':    'Lower-pitched relative of the oboe; carries the Largo theme in Dvořák New World.',
+  'Tenor saxophone': "Mid-range single-reed jazz instrument; Hawkins' Body and Soul.",
+  'Brass':           'Family of metal lip-vibrated instruments — trumpet, horn, trombone, tuba.',
+  'Symphony':        'Large orchestral work, usually in 4 movements.',
+  'Folk music':      'Traditional music passed down within a culture; a source for many composers.',
+
+  // Languages
+  'Italian':         'Language dominant in opera; source of most tempo markings.',
+  'German':          "Language of Wagner's operas, Schubert Lieder, and Berg's Wozzeck.",
+  'English':         "Language of Still's Troubled Island and Gershwin's operas.",
+
+  // General
+  'Romantic':        '19th-c era emphasizing emotion and expressive freedom.',
+  'Chromatic':       "Using notes outside the key's scale, moving by half steps.",
 };
 
+const STARRED_TERMS = new Set([
+  'Leitmotif', 'Pentatonic', 'Tritone', 'Ostinato',
+  'Atonality', '12-tone row', 'Syncopation',
+]);
+
 const CLASS_TERMS = [
-  { title: 'Class 2: Basics', terms: ['Pitch','Meter','Melody','Scale','Octave','Interval','Duple','Triple','Tempo','Adagio','Andante','Lento','Moderato','Allegro','Presto','Accelerando','Ritardando','Rallentando','Sharp','Flat','Thirds (happy)','Fourths (warmth)','Fifths'] },
-  { title: 'Class 3: Harmony', terms: ['Harmony','Third','Triad (key)','Half step','Tonality','Tonic','Subdominant','Dominant','Major','Minor','Forte','Piano','Crescendo','Decrescendo'] },
-  { title: 'Class 4: Texture', terms: ['Monophonic','Polyphonic','Strands','Sustained note','Organum','Discant','Imitative','Melisma'] },
-  { title: 'Class 5: Voices & Forms', terms: ['Soprano','Alto','Tenor','Bass','Imitative polyphony','Homophony','Motet','Madrigal','Word painting','Arrangement'] },
-  { title: 'Class 6: Early Baroque', terms: ['Ritornello','Strophic variation','Basso continuo','Glottal strokes'] },
-  { title: 'Class 7: Baroque Forms', terms: ['Recitative','Aria','Cadenza','Fugue','Exposition','Subject','Episode','Baroque','Pizzicato'] },
-  { title: 'Class 8: Opera', terms: ['Libretto','Opera seria','Opera buffa','Bel canto','Chromatic'] },
-  { title: 'Class 9: Bach', terms: ['Counter subject','Pedal point'] },
-  { title: 'Class 10: Classical Form', terms: ['Movement','Sonata form','Exposition','1st theme','2nd theme','Transitions','Closing','Development','Recapitulation','Coda'] },
-  { title: 'Class 11: Romantic Song', terms: ['Lied','Through-composed'] },
-  { title: 'Class 12: Virtuosity', terms: ['Arpeggio','Virtuoso','Vibrato','Legato','Harmonics','Trilling','Double stop'] },
-  { title: 'Class 13: Romantic Orchestra', terms: ['Program music','Romantic','Id\u00e9e fixe'] },
+  { title: '\u2605 Critical Exam Terms (memorize these!)', terms: ['Leitmotif','Pentatonic','Tritone','Ostinato','Atonality','12-tone row','Syncopation'] },
+  { title: '3/12 \u2014 Late Romantic Opera',         terms: ['Aria','Soprano','Mezzo-soprano','Italian','Verismo','Habanera','Romantic'] },
+  { title: '3/24 \u2014 Wagner & Gesamtkunstwerk',    terms: ['Leitmotif','Gesamtkunstwerk','Tristan Chord','German','Tenor','Brass'] },
+  { title: '3/26 \u2014 Late Romantic / Early Modern',terms: ['Pentatonic','Tritone','Impressionism','Symphony','Flute','English horn','Folk music'] },
+  { title: '3/31 \u2014 High Modernism (Stravinsky)', terms: ['Ostinato','Polytonality','Modernism','Bassoon'] },
+  { title: '4/2 \u2014 Second Viennese School',       terms: ['Atonality','12-tone row','Sprechstimme','Second Viennese School','Expressionism'] },
+  { title: '4/7 \u2014 American Modern',              terms: ['American Modern','Open intervals','Tritone','General dissonance'] },
+  { title: '4/14 \u2014 Jazz',                        terms: ['Jazz','Blue notes','Improvisation','Bebop','Swing','Scatting','Tenor saxophone','Modal'] },
+  { title: '4/16 \u2014 American Fusions',            terms: ['Syncopation','Ragtime','Stride piano','Blue notes'] },
+  { title: 'Bonus \u2014 Modern Broadway / Forms',    terms: ['Modern Broadway','Sonata form'] },
 ];
 
 function termPillHTML(term, cls) {
   const def = TERM_DEFS[term] || '';
   const tipHTML = def ? `<span class="term-tip">${def}</span>` : '';
-  return `<span class="${cls || 'term-chip'}">${term}${tipHTML}</span>`;
+  const starred = STARRED_TERMS.has(term) ? ' starred' : '';
+  return `<span class="${cls || 'term-chip'}${starred}">${term}${tipHTML}</span>`;
 }
 
 function renderTermsPage() {
@@ -711,36 +882,64 @@ let currentUser = localStorage.getItem(USER_KEY) || '';
 function getStateKey() { return 'music_quiz_stats_' + currentUser; }
 const ASSIGN_KEY = 'music_quiz_assignments';
 let audioFiles = {
-  introit: { url: 'music_files/Introit.mp3', fileName: 'Introit.mp3' },
-  kyrie: { url: 'music_files/Kyrie.mp3', fileName: 'Kyrie.mp3' },
-  alleluia: { url: 'music_files/Alleluia.mp3', fileName: 'Alleluia.mp3' },
-  leoninus_alleluia: { url: 'music_files/Leoninus Alleluia.mp3', fileName: 'Leoninus Alleluia.mp3' },
-  viderunt_omnes: { url: 'music_files/Perotinus Viderunt Omnes.mp3', fileName: 'Perotinus Viderunt Omnes.mp3' },
-  byrd_agnus_dei: { url: 'music_files/Byrd Agnus Dei.mp3', fileName: 'Byrd Agnus Dei.mp3' },
-  byrd_sweet_merry: { url: 'music_files/Byrd This Sweet and Merry Month.mp3', fileName: 'Byrd This Sweet and Merry Month.mp3' },
-  dowland_can_she: { url: 'music_files/Dowland Can She Excuse.mp3', fileName: 'Dowland Can She Excuse.mp3' },
-  dowland_arrangements: { url: 'music_files/Dowland arrangements.mp3', fileName: 'Dowland arrangements.mp3' },
-  monteverdi_ritornello: { url: 'music_files/Monteverdi Ritornello Prologue.mp3', fileName: 'Monteverdi Ritornello Prologue.mp3' },
-  monteverdi_lament: { url: 'music_files/Monteverdi Orfeo Lament.mp3', fileName: 'Monteverdi Orfeo Lament.mp3' },
-  handel_shepherds: { url: 'music_files/Handel There were shepherds.mp3', fileName: 'Handel There were shepherds.mp3' },
-  handel_every_valley: { url: 'music_files/Handel Evry Valley.mp3', fileName: 'Handel Evry Valley.mp3' },
-  handel_hallelujah: { url: 'music_files/Handel Hallelujah chorus.mp3', fileName: 'Handel Hallelujah chorus.mp3' },
-  handel_he_trusted: { url: 'music_files/Handel He trusted in God.mp3', fileName: 'Handel He trusted in God.mp3' },
-  bach_prelude_fugue: { url: 'music_files/Bach Prelude and Fugue in C Minor.mp3', fileName: 'Bach Prelude and Fugue in C Minor.mp3' },
-  mozart_notte: { url: 'music_files/Mozart Notte e giorno.mp3', fileName: 'Mozart Notte e giorno.mp3' },
-  mozart_ensemble: { url: 'music_files/Mozart Ensemble Don Giovanni.mp3', fileName: 'Mozart Ensemble Don Giovanni.mp3' },
-  mozart_la_ci: { url: 'music_files/Mozart La ci darem.mp3', fileName: 'Mozart La ci darem.mp3' },
-  beethoven_5_mvt1: { url: 'music_files/Beethoven Symphony 5 Mvt 1.mp3', fileName: 'Beethoven Symphony 5 Mvt 1.mp3' },
-  beethoven_5_mvt2: { url: 'music_files/Beethoven Symphony 5 Mvt 2.mp3', fileName: 'Beethoven Symphony 5 Mvt 2.mp3' },
-  beethoven_5_mvt3: { url: 'music_files/Beethoven Symphony 5 Mvt 3.mp3', fileName: 'Beethoven Symphony 5 Mvt 3.mp3' },
-  schubert_gretchen: { url: 'music_files/Schubert Gretchen.mp3', fileName: 'Schubert Gretchen.mp3' },
-  schubert_erlking: { url: 'music_files/Schubert Erlking.mp3', fileName: 'Schubert Erlking.mp3' },
-  mendelssohn_violin: { url: 'music_files/Mendelssohn Violin Concerto.mp3', fileName: 'Mendelssohn Violin Concerto.mp3' },
-  chopin_waltz: { url: 'music_files/Chopin Waltz Op 34.mp3', fileName: 'Chopin Waltz Op 34.mp3' },
-  berlioz_sym_mvt1: { url: 'music_files/Berlioz Fantastic Symphony Mvt 1.mp3', fileName: 'Berlioz Fantastic Symphony Mvt 1.mp3' },
-  berlioz_sym_mvt4: { url: 'music_files/Berlioz Fantastic Symphony Mvt 4.mp3', fileName: 'Berlioz Fantastic Symphony Mvt 4.mp3' },
-  berlioz_sym_mvt5: { url: 'music_files/Berlioz Fantastic Symphony Mvt 5.mp3', fileName: 'Berlioz Fantastic Symphony Mvt 5.mp3' },
-  brahms_clarinet: { url: 'music_files/Brahms Clarinet Quintet.mp3', fileName: 'Brahms Clarinet Quintet.mp3' },
+  // Late Romantic Opera (3/12)
+  puccini_mi_chiamano:        { url: 'music_files/Puccini Mi Chiamano Mimi.mp3',                fileName: 'Puccini Mi Chiamano Mimi.mp3' },
+  bizet_habanera:             { url: 'music_files/Bizet Habanera Carmen.mp3',                   fileName: 'Bizet Habanera Carmen.mp3' },
+  still_troubled_island:      { url: 'music_files/Still Troubled Island.mp3',                   fileName: 'Still Troubled Island.mp3' },
+
+  // Wagner (3/24)
+  wagner_walkure_prelude:     { url: 'music_files/Wagner Walkure Prelude Storm.mp3',            fileName: 'Wagner Walkure Prelude Storm.mp3' },
+  wagner_walkure_meeting:     { url: 'music_files/Wagner Walkure Meeting.mp3',                  fileName: 'Wagner Walkure Meeting.mp3' },
+  wagner_walkure_spring:      { url: 'music_files/Wagner Walkure Spring Song.mp3',              fileName: 'Wagner Walkure Spring Song.mp3' },
+  wagner_walkure_sword:       { url: 'music_files/Wagner Walkure Sword.mp3',                    fileName: 'Wagner Walkure Sword.mp3' },
+  wagner_walkure_ride:        { url: 'music_files/Wagner Walkure Ride of the Valkyries.mp3',    fileName: 'Wagner Walkure Ride of the Valkyries.mp3' },
+  wagner_tristan_liebestod:   { url: 'music_files/Wagner Tristan Liebestod.mp3',                fileName: 'Wagner Tristan Liebestod.mp3' },
+
+  // Late Romantic / Early Modern (3/26)
+  dvorak_new_world_2:         { url: 'music_files/Dvorak New World Symphony Mvt 2.mp3',         fileName: 'Dvorak New World Symphony Mvt 2.mp3' },
+  debussy_faun:               { url: 'music_files/Debussy Prelude Afternoon of a Faun.mp3',     fileName: 'Debussy Prelude Afternoon of a Faun.mp3' },
+
+  // High Modernism (3/31)
+  stravinsky_rite_intro:      { url: 'music_files/Stravinsky Rite of Spring Introduction.mp3',  fileName: 'Stravinsky Rite of Spring Introduction.mp3' },
+  stravinsky_rite_girls:      { url: 'music_files/Stravinsky Rite of Spring Girls Dance.mp3',   fileName: 'Stravinsky Rite of Spring Girls Dance.mp3' },
+  stravinsky_rite_spring:     { url: 'music_files/Stravinsky Rite of Spring Spring Rounds.mp3', fileName: 'Stravinsky Rite of Spring Spring Rounds.mp3' },
+  stravinsky_rite_procession: { url: 'music_files/Stravinsky Rite of Spring Procession.mp3',    fileName: 'Stravinsky Rite of Spring Procession.mp3' },
+  stravinsky_rite_glorif:     { url: 'music_files/Stravinsky Rite of Spring Glorification.mp3', fileName: 'Stravinsky Rite of Spring Glorification.mp3' },
+  stravinsky_rite_sacrif:     { url: 'music_files/Stravinsky Rite of Spring Sacrificial Dance.mp3', fileName: 'Stravinsky Rite of Spring Sacrificial Dance.mp3' },
+
+  // Second Viennese School (4/2)
+  schoenberg_variations:      { url: 'music_files/Schoenberg Variations for Orchestra Op 31.mp3', fileName: 'Schoenberg Variations for Orchestra Op 31.mp3' },
+  berg_wozzeck_act3_sc2:      { url: 'music_files/Berg Wozzeck Act 3 Scene 2.mp3',              fileName: 'Berg Wozzeck Act 3 Scene 2.mp3' },
+  berg_wozzeck_act3_sc4:      { url: 'music_files/Berg Wozzeck Act 3 Scene 4.mp3',              fileName: 'Berg Wozzeck Act 3 Scene 4.mp3' },
+  berg_wozzeck_act3_sc5:      { url: 'music_files/Berg Wozzeck Act 3 Scene 5.mp3',              fileName: 'Berg Wozzeck Act 3 Scene 5.mp3' },
+
+  // American Modern (4/7)
+  copland_appalachian_doppio:   { url: 'music_files/Copland Appalachian Spring Doppio.mp3',     fileName: 'Copland Appalachian Spring Doppio.mp3' },
+  copland_appalachian_moderato: { url: 'music_files/Copland Appalachian Spring Moderato.mp3',   fileName: 'Copland Appalachian Spring Moderato.mp3' },
+  bernstein_wss_prologue:       { url: 'music_files/Bernstein West Side Story Prologue.mp3',   fileName: 'Bernstein West Side Story Prologue.mp3' },
+  bernstein_wss_jet_song:       { url: 'music_files/Bernstein West Side Story Jet Song.mp3',   fileName: 'Bernstein West Side Story Jet Song.mp3' },
+  bernstein_wss_boy_have_love:  { url: 'music_files/Bernstein West Side Story Boy Like That I Have a Love.mp3', fileName: 'Bernstein West Side Story Boy Like That I Have a Love.mp3' },
+
+  // Jazz (4/14)
+  armstrong_cornet_chop_suey: { url: 'music_files/Armstrong Cornet Chop Suey.mp3',              fileName: 'Armstrong Cornet Chop Suey.mp3' },
+  ellington_mood_indigo:      { url: 'music_files/Ellington Mood Indigo.mp3',                   fileName: 'Ellington Mood Indigo.mp3' },
+  hawkins_body_and_soul:      { url: 'music_files/Hawkins Body and Soul.mp3',                   fileName: 'Hawkins Body and Soul.mp3' },
+  parker_cherokee:            { url: 'music_files/Parker Cherokee.mp3',                         fileName: 'Parker Cherokee.mp3' },
+  coltrane_summertime:        { url: 'music_files/Coltrane Summertime.mp3',                     fileName: 'Coltrane Summertime.mp3' },
+
+  // American Fusions (4/16)
+  joplin_maple_leaf_rag:      { url: 'music_files/Joplin Maple Leaf Rag.mp3',                   fileName: 'Joplin Maple Leaf Rag.mp3' },
+  joplin_treemonisha_dinah:   { url: 'music_files/Joplin Treemonisha Aunt Dinah.mp3',           fileName: 'Joplin Treemonisha Aunt Dinah.mp3' },
+  gershwin_my_mans_gone:      { url: 'music_files/Gershwin My Mans Gone Now.mp3',               fileName: 'Gershwin My Mans Gone Now.mp3' },
+  gershwin_bess_you_is:       { url: 'music_files/Gershwin Bess You Is My Woman Now.mp3',       fileName: 'Gershwin Bess You Is My Woman Now.mp3' },
+  gershwin_rhapsody:          { url: 'music_files/Gershwin Rhapsody in Blue.mp3',               fileName: 'Gershwin Rhapsody in Blue.mp3' },
+
+  // Bonus IDs
+  cook_swing_along:           { url: 'music_files/Cook Swing Along.mp3',                        fileName: 'Cook Swing Along.mp3' },
+  dawson_negro_folk_symphony: { url: 'music_files/Dawson Negro Folk Symphony.mp3',              fileName: 'Dawson Negro Folk Symphony.mp3' },
+  loesser_warm_all_over:      { url: 'music_files/Loesser Warm All Over.mp3',                   fileName: 'Loesser Warm All Over.mp3' },
+  sondheim_how_i_saved:       { url: 'music_files/Sondheim How I Saved Roosevelt.mp3',          fileName: 'Sondheim How I Saved Roosevelt.mp3' },
+  jerry_likes_my_corn:        { url: 'music_files/Jerry Likes My Corn.mp3',                     fileName: 'Jerry Likes My Corn.mp3' },
 };
 let currentAudio = null;
 let clipTimeout = null;
@@ -1078,7 +1277,9 @@ function renderStudyList() {
       const info = PERIOD_INFO[p.period] || {};
       const header = document.createElement('li');
       header.className = 'period-header';
-      header.innerHTML = `<h3>${info.label || p.period}</h3><div class="period-meta">Class: ${info.date || ''} &bull; Reading: ${info.reading || ''}</div>`;
+      const parts = [info.date && `Class: ${info.date}`, info.reading && `Reading: ${info.reading}`].filter(Boolean);
+      const meta = parts.length ? `<div class="period-meta">${parts.join(' &bull; ')}</div>` : '';
+      header.innerHTML = `<h3>${info.label || p.period}</h3>${meta}`;
       list.appendChild(header);
     }
 
@@ -1200,6 +1401,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
       if (loaded.length && !quizState.currentPieceId) startQuizQuestion();
     }
     if (btn.dataset.view === 'study') renderStudyList();
+    if (btn.dataset.view === 'term-quiz' && !termQuizState.currentTerm) startTermQuiz();
   });
 });
 
@@ -1344,6 +1546,160 @@ document.getElementById('switch-user').addEventListener('click', () => {
   document.getElementById('login-overlay').style.display = 'flex';
   document.getElementById('user-bar').style.display = 'none';
   document.getElementById('login-email').value = '';
+});
+
+// ==================== TERM QUIZ ====================
+let termQuizState = { currentTerm: null, answered: false, graded: false };
+let termSessionStats = { right: 0, close: 0, wrong: 0 };
+let termFilterMode = 'all';
+let termDirection = 't2d';
+const TERM_QUIZ_KEY = 'music_term_quiz_stats_';
+
+function loadTermQuizStats() {
+  try { return JSON.parse(localStorage.getItem(TERM_QUIZ_KEY + currentUser)) || {}; } catch { return {}; }
+}
+function saveTermQuizStats(s) {
+  localStorage.setItem(TERM_QUIZ_KEY + currentUser, JSON.stringify(s));
+}
+
+function buildTermPool() {
+  if (termFilterMode === 'starred') {
+    return [...STARRED_TERMS].map(t => ({ key: t, prompt: t, answer: TERM_DEFS[t] || '', starred: true }));
+  }
+  if (termFilterMode === 'composer') {
+    // Group pieces by composer; build "Composer → list of pieces" cards.
+    const byComposer = {};
+    for (const p of PIECES) {
+      if (!p.composer || p.composer === 'N/A') continue;
+      if (!byComposer[p.composer]) byComposer[p.composer] = [];
+      const label = p.play ? `${p.name} (${p.play})` : p.name;
+      byComposer[p.composer].push(label);
+    }
+    return Object.entries(byComposer).map(([composer, pieces]) => ({
+      key: 'composer:' + composer,
+      prompt: composer,
+      answer: pieces.join('; '),
+      starred: false,
+    }));
+  }
+  // 'all' — every TERM_DEFS entry
+  return Object.entries(TERM_DEFS).map(([t, d]) => ({
+    key: t, prompt: t, answer: d, starred: STARRED_TERMS.has(t),
+  }));
+}
+
+function pickNextTermCard() {
+  const pool = buildTermPool();
+  if (!pool.length) return null;
+  const stats = loadTermQuizStats();
+  const weights = pool.map(item => {
+    const s = stats[item.key] || { attempts: 0, right: 0, close: 0, wrong: 0, streak: 0 };
+    if (s.attempts === 0) return 5;
+    return Math.max(1, 3 + s.wrong * 2 + s.close * 1 - s.right * 0.5 - (s.streak || 0) * 0.5);
+  });
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < pool.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return pool[i];
+  }
+  return pool[pool.length - 1];
+}
+
+function startTermQuiz() {
+  const card = pickNextTermCard();
+  if (!card) return;
+  termQuizState = { currentCardKey: card.key, currentTerm: card.prompt, currentAnswer: card.answer, answered: false, graded: false, starred: card.starred };
+
+  const t2d = termDirection === 't2d';
+  const promptEl = document.getElementById('tq-prompt');
+  const answerEl = document.getElementById('tq-answer');
+  const promptLabel = document.getElementById('tq-prompt-label');
+  const answerLabel = document.getElementById('tq-answer-label');
+
+  if (t2d) {
+    // Term shown, definition revealed
+    promptLabel.textContent = termFilterMode === 'composer' ? 'Composer:' : 'Term:';
+    promptEl.textContent = card.prompt;
+    promptEl.className = 'tq-prompt' + (card.starred ? ' starred' : '');
+    answerLabel.textContent = termFilterMode === 'composer' ? 'Pieces:' : 'Definition:';
+    answerEl.textContent = card.answer;
+    answerEl.className = 'tq-answer';
+  } else {
+    // Definition shown, term revealed
+    promptLabel.textContent = termFilterMode === 'composer' ? 'Pieces:' : 'Definition:';
+    promptEl.textContent = card.answer;
+    promptEl.className = 'tq-prompt long';
+    answerLabel.textContent = termFilterMode === 'composer' ? 'Composer:' : 'Term:';
+    answerEl.textContent = card.prompt;
+    answerEl.className = 'tq-answer term' + (card.starred ? ' starred' : '');
+  }
+
+  document.getElementById('tq-answer-area').style.display = 'none';
+  document.getElementById('tq-show-action').style.display = '';
+  document.getElementById('tq-grade-action').style.display = 'none';
+  document.getElementById('tq-next-action').style.display = 'none';
+}
+
+function showTermAnswer() {
+  if (termQuizState.answered) return;
+  termQuizState.answered = true;
+  document.getElementById('tq-answer-area').style.display = '';
+  document.getElementById('tq-show-action').style.display = 'none';
+  document.getElementById('tq-grade-action').style.display = '';
+}
+
+function gradeTermCard(grade) {
+  if (termQuizState.graded) return;
+  if (!termQuizState.answered) return;
+  termQuizState.graded = true;
+  termSessionStats[grade]++;
+
+  const stats = loadTermQuizStats();
+  const k = termQuizState.currentCardKey;
+  const s = stats[k] || { attempts: 0, right: 0, close: 0, wrong: 0, streak: 0 };
+  s.attempts++;
+  s[grade]++;
+  if (grade === 'right') s.streak = (s.streak || 0) + 1; else s.streak = 0;
+  s.lastSeen = Date.now();
+  stats[k] = s;
+  saveTermQuizStats(stats);
+
+  document.getElementById('tq-correct').textContent = termSessionStats.right;
+  document.getElementById('tq-close').textContent = termSessionStats.close;
+  document.getElementById('tq-wrong').textContent = termSessionStats.wrong;
+  const total = termSessionStats.right + termSessionStats.close + termSessionStats.wrong;
+  if (total) {
+    const acc = Math.round((termSessionStats.right + termSessionStats.close * 0.5) / total * 100);
+    document.getElementById('tq-accuracy').textContent = acc + '% accuracy';
+  }
+
+  document.getElementById('tq-grade-action').style.display = 'none';
+  document.getElementById('tq-next-action').style.display = '';
+}
+
+// Term Quiz event handlers
+document.getElementById('tq-show').addEventListener('click', showTermAnswer);
+document.getElementById('tq-skip').addEventListener('click', startTermQuiz);
+document.getElementById('tq-next').addEventListener('click', startTermQuiz);
+document.querySelectorAll('[data-tq-grade]').forEach(btn => {
+  btn.addEventListener('click', () => gradeTermCard(btn.dataset.tqGrade));
+});
+document.querySelectorAll('.tq-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tq-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    termFilterMode = btn.dataset.tqFilter;
+    startTermQuiz();
+  });
+});
+document.querySelectorAll('.tq-dir-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tq-dir-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    termDirection = btn.dataset.tqDir;
+    startTermQuiz();
+  });
 });
 
 // ==================== INIT ====================
